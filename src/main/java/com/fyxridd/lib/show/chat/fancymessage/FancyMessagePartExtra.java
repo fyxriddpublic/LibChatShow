@@ -82,6 +82,10 @@ public class FancyMessagePartExtra extends FancyMessagePart implements Convertab
         updateFlag = true;
     }
 
+    public HashList<String> getListFix() {
+        return listFix;
+    }
+
     @Override
     public FancyMessagePart clone() {
         //listFix
