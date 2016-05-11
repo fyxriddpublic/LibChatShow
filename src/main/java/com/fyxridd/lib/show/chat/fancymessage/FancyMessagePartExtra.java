@@ -3,26 +3,34 @@ package com.fyxridd.lib.show.chat.fancymessage;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessagePart;
 import com.fyxridd.lib.core.api.hashList.HashList;
 import com.fyxridd.lib.core.api.hashList.HashListImpl;
+import com.fyxridd.lib.show.chat.api.condition.Condition;
 import com.fyxridd.lib.show.chat.api.fancymessage.Conditional;
 import com.fyxridd.lib.show.chat.api.fancymessage.Convertable;
 import com.fyxridd.lib.show.chat.api.fancymessage.Itemable;
+import com.fyxridd.lib.show.chat.condition.MathCompareCondition;
+
 import org.bukkit.ChatColor;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 提供额外的功能
  */
 public class FancyMessagePartExtra extends FancyMessagePart implements Convertable, Itemable, Conditional {
-    /**
-     * 是否有替换符/列表符
-     */
+    private static final String HAS_FIX = "\\{[A-Za-z0-9_]+\\}";
+    
+    //是否有替换符/列表符
     private boolean hasFix;
-    /**
-     * 列表符列表,格式'数字.属性'或'数字.方法()'或'数字.方法(name)'
-     */
+    //列表符列表,格式'数字.属性'或'数字.方法()'或'数字.方法(name)'
     private HashList<String> listFix;
 
+    //条件检测式
+    private MathCompareCondition conExp;
+    //条件变量列表
+    private Map<String, Condition> conParams;
+    
     /**
      * 绑定的悬浮物品名
      */
@@ -38,10 +46,12 @@ public class FancyMessagePartExtra extends FancyMessagePart implements Convertab
         updateFlag = true;
     }
 
-    private FancyMessagePartExtra(String text, ChatColor color, ChatColor[] styles, String clickActionName, String clickActionData, String hoverActionName, String hoverActionData, boolean hasFix, HashList<String> listFix, String item) {
+    private FancyMessagePartExtra(String text, ChatColor color, ChatColor[] styles, String clickActionName, String clickActionData, String hoverActionName, String hoverActionData, boolean hasFix, HashList<String> listFix, MathCompareCondition conExp, Map<String, Condition> conParams, String item) {
         super(text, color, styles, clickActionName, clickActionData, hoverActionName, hoverActionData);
         this.hasFix = hasFix;
         this.listFix = listFix;
+        this.conExp = conExp;
+        this.conParams = conParams;
         this.item = item;
     }
 
@@ -85,7 +95,7 @@ public class FancyMessagePartExtra extends FancyMessagePart implements Convertab
         if (this.getStyles() != null) styles = this.getStyles().clone();
         else styles = null;
         //新建
-        return new FancyMessagePartExtra(text, color, styles, getClickActionName(), getClickActionData(), getHoverActionName(), getHoverActionData(), hasFix, listFix, item);
+        return new FancyMessagePartExtra(text, color, styles, getClickActionName(), getClickActionData(), getHoverActionName(), getHoverActionData(), hasFix, listFix, conExp, conParams, item);
     }
 
     /**
@@ -151,11 +161,16 @@ public class FancyMessagePartExtra extends FancyMessagePart implements Convertab
             //text
             text = text.replace(name, show);
             //con
-//            if (mp.con != null) {
-//                for (Condition condition:mp.con) condition.replace(name, show);
-//            }
+            if (conParams != null) {
+                for (Condition condition:conParams.values()) {
+                    if (condition instanceof com.fyxridd.lib.show.chat.api.condition.Convertable) {
+                        com.fyxridd.lib.show.chat.api.condition.Convertable convertable = (com.fyxridd.lib.show.chat.api.condition.Convertable) condition;
+                        convertable.convert(name, show);
+                    }
+                }
+            }
             //item
-//            if (mp.item != null) mp.item = mp.item.replace(name, show);
+            if (item != null) item = item.replace(name, show);
             //click
             if (clickActionData != null) clickActionData = clickActionData.replace(name, show);
             //hover
@@ -170,7 +185,17 @@ public class FancyMessagePartExtra extends FancyMessagePart implements Convertab
 
     @Override
     public boolean checkCondition() {
-
+        if (conExp == null) return true;
+        
+        //可包含变量，转换
+        if (conParams != null) {
+            for (Entry<String, Condition> entry:conParams.entrySet()) {
+                conExp.convertVariable(entry.getKey(), entry.getValue().check());
+            }
+        }
+        
+        //检测
+        return conExp.check();
     }
 
     /**
@@ -187,24 +212,25 @@ public class FancyMessagePartExtra extends FancyMessagePart implements Convertab
 
         //listFix
         this.listFix = new HashListImpl<>();
-//                if (mp.con != null) {
-//                    for (Condition condition: mp.con) checkAdd(listFix, condition.toString());
-//                }
+        if (conParams != null) {
+            for (Condition condition:conParams.values()) checkAdd(condition.toString());
+        }
         checkAdd(text);
-//                checkAdd(listFix, mp.item);
+        checkAdd(item);
         checkAdd(clickActionData);
         checkAdd(hoverActionData);
 
         //hasFix
-        hasFix = !listFix.isEmpty() || ((" " + text + clickActionData + hoverActionData +" ").split("\\{[A-Za-z0-9_]+\\}").length > 1);
-//                    if (!mpe.isHasFix() && mp.con != null) {
-//                        for (Condition condition : mp.con) {
-//                            if (condition.hasFix()) {
-//                                mp.hasFix = true;
-//                                break;
-//                            }
-//                        }
-//                    }
+        hasFix = !listFix.isEmpty();
+        if (!hasFix && (" " + text + item + clickActionData + hoverActionData +" ").split(HAS_FIX).length > 1) hasFix = true;
+        if (!hasFix && conParams != null) {
+            for (Condition condition:conParams.values()) {
+                if (condition.toString().split(HAS_FIX).length > 1) {
+                    hasFix = true;
+                    break;
+                }
+            }
+        }
         return hasFix;
     }
 

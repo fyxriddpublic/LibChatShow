@@ -12,17 +12,17 @@ public class Test {
     public static void main(String... args) {
         try {
             Equation expr = EquationParser.parse("(a && b)||c");
-//            System.out.println(expr.getExpression().evalAsBoolean());
+            System.out.println(expr.evalAsBoolean());
 
-            Equation a = EquationParser.parse("3>2");
-            Equation b = EquationParser.parse("false");
-            Equation c = EquationParser.parse("false");
-
-            ExpressionCombiner combiner = new ExpressionCombiner();
-            combiner.replace(expr, "a", a);
-            combiner.replace(expr, "b", b);
-            Expression expression = combiner.replace(expr, "c", c);
-            System.out.println(expression.evalAsBoolean());
+//            Equation a = EquationParser.parse("3>2");
+//            Equation b = EquationParser.parse("false");
+//            Equation c = EquationParser.parse("false");
+//
+//            ExpressionCombiner combiner = new ExpressionCombiner();
+//            combiner.replace(expr, "a", a);
+//            combiner.replace(expr, "b", b);
+//            Expression expression = combiner.replace(expr, "c", c);
+//            System.out.println(expression.evalAsBoolean());
 
 //            ExpressionSimplifier simplifier = new ExpressionSimplifier();
 //            System.out.println(simplifier.simplify(expr).eval());
