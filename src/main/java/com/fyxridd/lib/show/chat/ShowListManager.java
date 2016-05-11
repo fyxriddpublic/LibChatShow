@@ -10,13 +10,13 @@ import java.util.HashMap;
  */
 public class ShowListManager {
     //插件名 列表名 列表获取器
-    private HashMap<String, HashMap<String, ShowListGetter>> handleHash = new HashMap<>();
+    private HashMap<String, HashMap<String, ShowListGetter<?>>> handleHash = new HashMap<>();
 
     /**
      * @see com.fyxridd.lib.core.api.ShowApi#register(String, String, com.fyxridd.lib.core.api.inter.ShowListGetter)
      */
-    public void register(String plugin, String key, ShowListGetter showListGetter) {
-        if (!handleHash.containsKey(plugin)) handleHash.put(plugin, new HashMap<String, ShowListGetter>());
+    public void register(String plugin, String key, ShowListGetter<?> showListGetter) {
+        if (!handleHash.containsKey(plugin)) handleHash.put(plugin, new HashMap<String, ShowListGetter<?>>());
         handleHash.get(plugin).put(key, showListGetter);
     }
 
@@ -28,7 +28,7 @@ public class ShowListManager {
      * @param arg 变量(可包含空格)
      * @return 显示列表,异常返回null
      */
-    public ShowList getShowList(String plugin, String key, String name, String arg) {
+    public ShowList<?> getShowList(String plugin, String key, String name, String arg) {
         try {
             return handleHash.get(plugin).get(key).handle(name, arg);
         } catch (Exception e) {

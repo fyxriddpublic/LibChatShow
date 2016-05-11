@@ -67,6 +67,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
 
     private ShowListManager showListManager;
     private ShowMapManager showMapManager;
+    private ShowEventManager showEventManager;
 
     private static boolean inCancelChat;
     private static int deadLoopLevel = 5;//循环最大层次,超过则判定为死循环
@@ -103,6 +104,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
     public ShowManager() {
         showListManager = new ShowListManager();
         showMapManager = new ShowMapManager();
+        showEventManager = new ShowEventManager();
         //注册事件
         Bukkit.getPluginManager().registerEvents(this, ShowPlugin.instance);
         //注册功能
@@ -141,58 +143,6 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
     @EventHandler(priority= EventPriority.LOW)
     public void onReloadConfig(ReloadConfigEvent e) {
         if (e.getPlugin().equals(ShowPlugin.pn)) loadConfig();
-    }
-
-    @EventHandler(priority= EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onEntityShootBow(EntityShootBowEvent e) {
-        if (cancelShoot && e.getEntity() instanceof Player) exit((Player) e.getEntity(), false);
-    }
-
-    @EventHandler(priority= EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerInteract(PlayerInteractEvent e) {
-        if (cancelInteract) exit(e.getPlayer(), false);
-    }
-
-    @EventHandler(priority= EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerAnimation(PlayerAnimationEvent e) {
-        if (cancelAnimation) exit(e.getPlayer(), false);
-    }
-
-    @EventHandler(priority= EventPriority.LOW, ignoreCancelled = false)
-    public void onPlayerChat(PlayerChatEvent e) {
-        if (cancelChat) exit(e.getP(), false);
-        else if (inCancelChat && !e.isCancelled() && isInPage(e.getP())) e.setCancelled(true);
-    }
-
-    @EventHandler(priority= EventPriority.LOWEST)
-    public void onPlayerQuit(PlayerQuitEvent e) {
-        exit(e.getPlayer(), false);
-    }
-
-    @EventHandler(priority= EventPriority.LOWEST)
-    public void onPlayerDeath(PlayerDeathEvent e) {
-        exit(e.getEntity(), false);
-    }
-
-    @EventHandler(priority= EventPriority.LOWEST)
-    public void onRealDamage(RealDamageEvent e) {
-        if (cancelAttack) {
-            EntityDamageByEntityEvent event = e.getEntityDamageByEntityEvent();
-
-            //受攻击者
-            if (event.getEntity() instanceof Player) {
-                ShowManager.exit((Player) event.getEntity(), false, true);
-            }
-
-            //攻击者
-            Player damager = null;
-            if (event.getDamager() instanceof Player) damager = (Player) event.getDamager();
-            else if (event.getDamager() instanceof Projectile) {
-                ProjectileSource ps = ((Projectile) event.getDamager()).getShooter();
-                if (ps instanceof Player) damager = (Player) ps;
-            }
-            if (damager != null) ShowManager.exit(damager, false, true);
-        }
     }
 
     public static FancyMessage getPageControl() {
@@ -1024,7 +974,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
     }
 
     private void loadConfig() {
-        YamlConfiguration config = ConfigApi.getConfig(CorePlugin.pn);
+        YamlConfiguration config = ConfigApi.getConfig(ShowPlugin.pn);
 
         //inCancelChat
         inCancelChat = config.getBoolean("show.cancel.chatCancel");
@@ -1033,7 +983,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
         deadLoopLevel = config.getInt("show.deadLoopLevel");
         if (deadLoopLevel < 1) {
             deadLoopLevel = 1;
-            ConfigApi.log(CorePlugin.pn, "show.deadLoopLevel < 1");
+            ConfigApi.log(ShowPlugin.pn, "show.deadLoopLevel < 1");
         }
         //cancelInteract,cancelAnimation,cancelChat
         cancelInteract = config.getBoolean("show.cancel.interact");
@@ -1045,13 +995,13 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
         maxBackPage = config.getInt("show.maxBackPage");
         if (maxBackPage < 0) {
             maxBackPage = 0;
-            ConfigApi.log(CorePlugin.pn, "show.maxBackPage < 0");
+            ConfigApi.log(ShowPlugin.pn, "show.maxBackPage < 0");
         }
         //line
         line = config.getInt("show.line");
         if (line < 1) {
             line = 1;
-            ConfigApi.log(CorePlugin.pn, "show.line < 1");
+            ConfigApi.log(ShowPlugin.pn, "show.line < 1");
         }
         //add
         add = get(730);
@@ -1066,10 +1016,10 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
     }
 
     private static FancyMessage get(int id) {
-        return FormatApi.get(CorePlugin.pn, id);
+        return FormatApi.get(ShowPlugin.pn, id);
     }
 
     private static FancyMessage get(int id, Object... args) {
-        return FormatApi.get(CorePlugin.pn, id, args);
+        return FormatApi.get(ShowPlugin.pn, id, args);
     }
 }
