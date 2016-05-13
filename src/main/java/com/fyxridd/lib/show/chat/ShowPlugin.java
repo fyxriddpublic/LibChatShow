@@ -7,14 +7,11 @@ public class ShowPlugin extends JavaPlugin {
 
     private ShowManager showManager;
 
-    @Override
-    public void onLoad() {
-        instance = this;
-    }
-
     //启动插件
     @Override
     public void onEnable() {
+        instance = this;
+
         showManager = new ShowManager();
 
         super.onEnable();
