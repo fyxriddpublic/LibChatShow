@@ -263,7 +263,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
                 List showList = list.getPage(listSize, listNow);
                 getSize = showList.size();
                 for (FancyMessage msg : resultPage) {
-                    for (FancyMessagePart mp : msg.getMessageParts()) {
+                    for (FancyMessagePart mp : msg.getMessageParts().values()) {
                         if (mp instanceof FancyMessagePartExtra) {
                             FancyMessagePartExtra mpe = (FancyMessagePartExtra) mp;
                             if (mpe.getListFix() != null) {
@@ -317,7 +317,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
                                         CoreApi.debug(e.getMessage());
                                     }
                                 }
-                                MessageApi.convert(mp, replace);
+                                mpe.convert(replace);
                             }
                         }
                     }
