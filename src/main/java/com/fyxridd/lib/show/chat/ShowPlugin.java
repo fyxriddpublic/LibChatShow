@@ -19,6 +19,8 @@ public class ShowPlugin extends JavaPlugin {
     //插件版本
     public static String ver;
 
+    private ShowManager showManager;
+
     @Override
     public void onLoad() {
         instance = this;
@@ -34,6 +36,8 @@ public class ShowPlugin extends JavaPlugin {
     //启动插件
     @Override
     public void onEnable() {
+        showManager = new ShowManager();
+
         new CoreMain();
 
         //成功启动
@@ -45,5 +49,9 @@ public class ShowPlugin extends JavaPlugin {
     public void onDisable() {
         //显示插件成功停止信息
         CoreApi.sendConsoleMessage(FormatApi.get(pn, 30, pn, ver).getText());
+    }
+
+    public ShowManager getShowManager() {
+        return showManager;
     }
 }

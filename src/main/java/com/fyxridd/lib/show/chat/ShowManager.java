@@ -13,15 +13,19 @@ import com.fyxridd.lib.core.api.event.PlayerChatEvent;
 import com.fyxridd.lib.core.api.event.RealDamageEvent;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessagePart;
+import com.fyxridd.lib.core.api.hashList.HashList;
 import com.fyxridd.lib.core.api.inter.FunctionInterface;
+import com.fyxridd.lib.show.chat.api.condition.Condition;
 import com.fyxridd.lib.show.chat.api.fancymessage.Conditional;
 import com.fyxridd.lib.show.chat.api.fancymessage.Itemable;
 import com.fyxridd.lib.show.chat.api.page.*;
 import com.fyxridd.lib.show.chat.api.show.PlayerContext;
 import com.fyxridd.lib.show.chat.api.show.Refresh;
 import com.fyxridd.lib.show.chat.api.show.ShowList;
+import com.fyxridd.lib.show.chat.condition.MathCompareCondition;
 import com.fyxridd.lib.show.chat.fancymessage.FancyMessagePartExtra;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -647,6 +651,31 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
 
     public static Page load(String plugin, String page, File file) {
         return load(plugin, page, CoreApi.loadConfigByUTF8(file));
+    }
+
+    public FancyMessage load(String msg, ConfigurationSection config) {
+        FancyMessage result = MessageApi.load(msg, config);
+        List<FancyMessagePart> list = result.getMessageParts();
+        for (int index=0;index<list.size();index++) {
+            boolean hasFix = false;
+            HashList<String> listFix = null;
+            MathCompareCondition conExp;
+            Map<String, Condition > conParams;
+            String item;
+            //读取
+            {
+
+
+
+                conExp =
+            }
+            //装配
+            FancyMessagePart mp = list.get(index);
+            FancyMessagePartExtra mpe = new FancyMessagePartExtra(mp.getText(), mp.getColor(), mp.getStyles(), mp.getClickActionName(), mp.getClickActionData(), mp.getHoverActionName(), mp.getHoverActionData(), hasFix, listFix, conExp, conParams, item);
+            //更新
+            list.set(index, mpe);
+        }
+        return result;
     }
 
     /**

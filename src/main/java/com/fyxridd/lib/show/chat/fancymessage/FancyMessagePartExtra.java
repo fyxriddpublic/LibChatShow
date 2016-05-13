@@ -46,7 +46,7 @@ public class FancyMessagePartExtra extends FancyMessagePart implements Convertab
         updateFlag = true;
     }
 
-    private FancyMessagePartExtra(String text, ChatColor color, ChatColor[] styles, String clickActionName, String clickActionData, String hoverActionName, String hoverActionData, boolean hasFix, HashList<String> listFix, MathCompareCondition conExp, Map<String, Condition> conParams, String item) {
+    public FancyMessagePartExtra(String text, ChatColor color, ChatColor[] styles, String clickActionName, String clickActionData, String hoverActionName, String hoverActionData, boolean hasFix, HashList<String> listFix, MathCompareCondition conExp, Map<String, Condition> conParams, String item) {
         super(text, color, styles, clickActionName, clickActionData, hoverActionName, hoverActionData);
         this.hasFix = hasFix;
         this.listFix = listFix;
