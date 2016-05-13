@@ -46,13 +46,14 @@ public class FancyMessagePartExtra extends FancyMessagePart implements Convertab
         updateFlag = true;
     }
 
-    public FancyMessagePartExtra(String text, ChatColor color, ChatColor[] styles, String clickActionName, String clickActionData, String hoverActionName, String hoverActionData, boolean hasFix, HashList<String> listFix, MathCompareCondition conExp, Map<String, Condition> conParams, String item) {
+    public FancyMessagePartExtra(String text, ChatColor color, ChatColor[] styles, String clickActionName, String clickActionData, String hoverActionName, String hoverActionData, boolean hasFix, HashList<String> listFix, MathCompareCondition conExp, Map<String, Condition> conParams, String item, boolean updateFlag) {
         super(text, color, styles, clickActionName, clickActionData, hoverActionName, hoverActionData);
         this.hasFix = hasFix;
         this.listFix = listFix;
         this.conExp = conExp;
         this.conParams = conParams;
         this.item = item;
+        this.updateFlag = updateFlag;
     }
 
     @Override
@@ -99,7 +100,7 @@ public class FancyMessagePartExtra extends FancyMessagePart implements Convertab
         if (this.getStyles() != null) styles = this.getStyles().clone();
         else styles = null;
         //新建
-        return new FancyMessagePartExtra(text, color, styles, getClickActionName(), getClickActionData(), getHoverActionName(), getHoverActionData(), hasFix, listFix, conExp, conParams, item);
+        return new FancyMessagePartExtra(text, color, styles, getClickActionName(), getClickActionData(), getHoverActionName(), getHoverActionData(), hasFix, listFix, conExp, conParams, item, updateFlag);
     }
 
     /**
