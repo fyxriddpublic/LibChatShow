@@ -11,7 +11,6 @@ import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.UtilApi;
 import com.fyxridd.lib.core.api.event.PlayerChatEvent;
 import com.fyxridd.lib.core.api.event.RealDamageEvent;
-import com.fyxridd.lib.core.api.event.ReloadConfigEvent;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessagePart;
 import com.fyxridd.lib.core.api.inter.FunctionInterface;
