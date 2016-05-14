@@ -155,5 +155,12 @@
             <version>[0.0.1,)</version>
             <scope>provided</scope>
         </dependency>
+        <!--LibConfig-->
+        <dependency>
+            <groupId>com.fyxridd</groupId>
+            <artifactId>LibConfig</artifactId>
+            <version>[0.0.1,)</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

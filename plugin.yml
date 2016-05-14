@@ -1,7 +1,7 @@
 ﻿name: LibChatShow
 main: com.fyxridd.lib.show.chat.api.ShowPlugin
 version: 0.1.0
-depend: [Vault, ProtocolLib, PacketWrapper, LibCore]
+depend: [Vault, ProtocolLib, PacketWrapper, LibCore, LibConfig]
 softdepend:
 commands:
   s:
