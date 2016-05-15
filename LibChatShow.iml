@@ -23,5 +23,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.mybatis:mybatis:3.2.7" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: mysql:mysql-connector-java:5.1.38" level="project" />
     <orderEntry type="module" module-name="LibConfig" scope="PROVIDED" />
+    <orderEntry type="module" module-name="LibLang" scope="PROVIDED" />
   </component>
 </module>

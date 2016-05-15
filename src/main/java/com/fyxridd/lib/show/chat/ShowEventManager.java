@@ -4,15 +4,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.EventExecutor;
 import org.bukkit.projectiles.ProjectileSource;
 
 import com.fyxridd.lib.core.api.ConfigApi;
@@ -34,7 +33,14 @@ public class ShowEventManager implements Listener {
     
     public ShowEventManager() {
         //注册事件
-        Bukkit.getPluginManager().registerEvents(this, ShowPlugin.instance);
+        Bukkit.getPluginManager().registerEvent(PlayerChatEvent.class, ShowPlugin.instance, EventPriority.LOW, new EventExecutor() {
+            @Override
+            public void execute(Listener listener, Event e) throws EventException {
+                PlayerChatEvent event = (PlayerChatEvent) e;
+                if (cancelChat) exit(event.getP(), false);
+                else if (inCancelChat && isInPage(event.getP())) event.setCancelled(true);
+            }
+        }, ShowPlugin.instance, true);
     }
 
     @EventHandler(priority= EventPriority.LOW)
@@ -55,12 +61,6 @@ public class ShowEventManager implements Listener {
     @EventHandler(priority= EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerAnimation(PlayerAnimationEvent e) {
         if (cancelAnimation) exit(e.getPlayer(), false);
-    }
-
-    @EventHandler(priority= EventPriority.LOW, ignoreCancelled = false)
-    public void onPlayerChat(PlayerChatEvent e) {
-        if (cancelChat) exit(e.getP(), false);
-        else if (inCancelChat && !e.isCancelled() && isInPage(e.getP())) e.setCancelled(true);
     }
 
     @EventHandler(priority= EventPriority.LOWEST)

@@ -3,7 +3,7 @@ package com.fyxridd.lib.show.chat.manager;
 import com.fyxridd.lib.config.api.ConfigApi;
 import com.fyxridd.lib.config.manager.ConfigManager;
 import com.fyxridd.lib.core.api.CoreApi;
-import com.fyxridd.lib.core.api.event.PlayerChatBroadcastEvent;
+import com.fyxridd.lib.core.api.event.PlayerChatReceiveEvent;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 import com.fyxridd.lib.show.chat.ShowPlugin;
 import com.fyxridd.lib.show.chat.api.ShowApi;
@@ -54,8 +54,6 @@ public class DelayChatManager {
     private HashMap<Player, Queue<FancyMessage>> delayChats = new HashMap<>();
 
     public DelayChatManager() {
-        //注册配置
-        ConfigApi.register(ShowPlugin.instance.pn, DelayChatConfig.class);
         //添加配置监听
         ConfigApi.addListener(ShowPlugin.instance.pn, DelayChatConfig.class, new ConfigManager.Setter<DelayChatConfig>() {
             @Override
@@ -73,10 +71,10 @@ public class DelayChatManager {
             }
         }, ShowPlugin.instance);
         //监听聊天广播事件
-        Bukkit.getPluginManager().registerEvent(PlayerChatBroadcastEvent.class, ShowPlugin.instance, EventPriority.NORMAL, new EventExecutor() {
+        Bukkit.getPluginManager().registerEvent(PlayerChatReceiveEvent.class, ShowPlugin.instance, EventPriority.NORMAL, new EventExecutor() {
             @Override
             public void execute(Listener listener, Event e) throws EventException {
-                PlayerChatBroadcastEvent event = (PlayerChatBroadcastEvent) e;
+                PlayerChatReceiveEvent event = (PlayerChatReceiveEvent) e;
                 //添加聊天
                 addChat(event.getP(), event.getMsg(), false);
                 //取消事件

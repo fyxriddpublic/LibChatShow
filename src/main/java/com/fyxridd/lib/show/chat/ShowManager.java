@@ -4,11 +4,13 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import com.fyxridd.lib.config.api.ConfigApi;
+import com.fyxridd.lib.config.manager.ConfigManager;
 import com.fyxridd.lib.core.CoreManager;
-import com.fyxridd.lib.core.api.ConfigApi;
 import com.fyxridd.lib.core.api.CoreApi;
 import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.UtilApi;
+import com.fyxridd.lib.core.api.event.PlayerTipEvent;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessagePart;
 import com.fyxridd.lib.core.api.inter.FunctionInterface;
@@ -18,13 +20,18 @@ import com.fyxridd.lib.show.chat.api.page.*;
 import com.fyxridd.lib.show.chat.api.show.PlayerContext;
 import com.fyxridd.lib.show.chat.api.show.Refresh;
 import com.fyxridd.lib.show.chat.api.show.ShowList;
+import com.fyxridd.lib.show.chat.config.ShowConfig;
 import com.fyxridd.lib.show.chat.fancymessage.FancyMessagePartExtra;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.EventExecutor;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +42,7 @@ import java.util.*;
 /**
  * 显示管理
  */
-public class ShowManager implements Listener, FunctionInterface, Refresh {
+public class ShowManager implements FunctionInterface, Refresh {
     /**
      * 默认pageNow的值
      */
@@ -55,6 +62,8 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
     private ShowListManager showListManager;
     private ShowMapManager showMapManager;
     private ShowEventManager showEventManager;
+
+    private ShowConfig config;
 
     private static boolean inCancelChat;
     private static int deadLoopLevel = 5;//循环最大层次,超过则判定为死循环
@@ -93,10 +102,13 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
         showMapManager = new ShowMapManager();
         showEventManager = new ShowEventManager();
 
-        //注册事件
-        Bukkit.getPluginManager().registerEvents(this, ShowPlugin.instance);
-        //注册功能
-        FuncManager.register(this);
+        //添加配置监听
+        ConfigApi.addListener(ShowPlugin.instance.pn, ShowConfig.class, new ConfigManager.Setter<ShowConfig>() {
+            @Override
+            public void set(ShowConfig value) {
+                config = value;
+            }
+        });
         //监听限制聊天包
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(ShowPlugin.instance, PacketType.Play.Server.CHAT) {
             @Override
@@ -104,6 +116,21 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
                 if (isInPage(event.getPlayer())) event.setCancelled(true);
             }
         });
+        //注册事件
+        {
+            //玩家提示事件
+            Bukkit.getPluginManager().registerEvent(PlayerTipEvent.class, ShowPlugin.instance, EventPriority.NORMAL, new EventExecutor() {
+                @Override
+                public void execute(Listener listener, Event e) throws EventException {
+                    PlayerTipEvent event = (PlayerTipEvent) e;
+                    if (event.isForce()) {//强制显示
+                        tip(event.getP(), event.getMsg(), true);
+                    }else {//非强制显示
+                        if (isInPage(event.getP())) event.setCancelled(true);
+                    }
+                }
+            }, ShowPlugin.instance, true);
+        }
         //注册Params获取器
         TransactionApi.registerParamsHandler(ShowPlugin.pn, GET_PLAYER_CONTEXT, new TipParamsHandler() {
             @Override
@@ -347,7 +374,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
             //物品信息替换
             if (itemHash != null) {
                 for (FancyMessage msg:resultPage) {
-                    for (FancyMessagePart mp : msg.getMessageParts()) {
+                    for (FancyMessagePart mp : msg.getMessageParts().values()) {
                         if (mp instanceof Itemable) {
                             Itemable itemable = (Itemable) mp;
                             String item = itemable.getHoverItem();
@@ -365,7 +392,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
 
             //条件显示
             for (FancyMessage msg:resultPage) {
-                Iterator<FancyMessagePart> it = msg.getMessageParts().iterator();
+                Iterator<FancyMessagePart> it = msg.getMessageParts().values().iterator();
                 while (it.hasNext()) {
                     FancyMessagePart mp = it.next();
                     if (mp instanceof Conditional) {
@@ -412,24 +439,24 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
             if (page.isFillEmpty()) {
                 int empty = line-(page.isHandleTip()?2:0)-resultPage.size()-(front != null?front.size():0)-(behind != null?behind.size():0);
                 if (empty > 0) {
-                    for (int i=0;i<empty;i++) add.send(p, false);
+                    for (int i=0;i<empty;i++) MessageApi.sendChatPacket(p, add);
                 }
             }
             //显示页面
             if (front != null) {
-                for (FancyMessage msg: front) msg.send(p, false);
+                for (FancyMessage msg: front) MessageApi.sendChatPacket(p, msg);
             }
-            for (FancyMessage msg:resultPage) msg.send(p, false);
+            for (FancyMessage msg:resultPage) MessageApi.sendChatPacket(p, msg);
             if (behind != null) {
-                for (FancyMessage msg: behind) msg.send(p, false);
+                for (FancyMessage msg: behind) MessageApi.sendChatPacket(p, msg);
             }
             //显示页面尾部操作提示
             if (page.isHandleTip()) {
-                operateTipMenu.send(p, false);
+                MessageApi.sendChatPacket(p, operateTipMenu);
                 List<FancyMessage> tipList = tipHash.get(p);
                 if (tipList != null) {
-                    for (FancyMessage tip: tipList) tip.send(p, false);
-                }else operateTipEmpty.send(p, false);
+                    for (FancyMessage tip: tipList) MessageApi.sendChatPacket(p, tip);
+                }else MessageApi.sendChatPacket(p, operateTipEmpty);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -544,7 +571,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
      * @see com.fyxridd.lib.core.api.ShowApi#tip(Player, List, boolean)
      */
     public static void tip(Player p, FancyMessage msg, boolean force) {
-        List<FancyMessage> tipList = new ArrayList<FancyMessage>();
+        List<FancyMessage> tipList = new ArrayList<>();
         tipList.add(msg);
         tip(p, tipList, force);
     }
@@ -556,7 +583,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
         if (msgList == null) return;
         PlayerContext pc = playerContextHash.get(p);
         if (pc == null) {
-            for (FancyMessage tip:msgList) tip.send(p, true);
+            for (FancyMessage tip:msgList) MessageApi.sendChatPacket(p, tip);
         }else if (force){
             tipHash.put(p, msgList);
             reShow(pc);
@@ -730,7 +757,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
         config.set("listSize", page.getListSize());
         config.set("refresh", page.isRefresh());
         if (page.getMaps() != null) {
-            List<String> mapsList = new ArrayList<String>();
+            List<String> mapsList = new ArrayList<>();
             for (MapInfo mi:page.getMaps().values()) mapsList.add(mi.getKeyName()+" "+mi.getPlugin()+":"+mi.getKey());
             config.set("maps", mapsList);
         }
@@ -882,8 +909,8 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
 
     @Override
     public void refresh(PlayerContext pc) {
-        ShowManager.show(pc.callback, pc.obj, pc.p, pc.plugin, pc.pageName, pc.list, pc.data, pc.pageNow,
-                pc.listNow, pc.front, pc.behind, pc.itemHash);
+        ShowManager.show(pc.getRefresh(), pc.getObj(), pc.getP(), pc.getPlugin(), pc.getPageName(), pc.getList(), pc.getData(), pc.getPageNow(),
+                pc.getListNow(), pc.getFront(), pc.getBehind(), pc.getItemHash());
     }
 
     /**
@@ -899,13 +926,13 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
             tip(p, get(665), true);
             return;
         }
-        Page pa = getPage(pc.plugin, pc.pageName);
+        Page pa = getPage(pc.getPlugin(), pc.getPageName());
         if (pa == null) return;//异常
         if (page < 1 || page > pa.getPageMax()) {//页面超出范围
             tip(p, get(685), true);
             return;
         }
-        if (page == pc.pageNow) {//已经处于这一页了
+        if (page == pc.getPageNow()) {//已经处于这一页了
             tip(p, get(695), true);
             return;
         }
@@ -915,7 +942,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
             list.add(get(700, page));
             tipHash.put(p, list);
         }
-        pc.pageNow = page;
+        pc.setPageNow(page);
         reShow(pc);
     }
 
@@ -932,17 +959,17 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
             tip(p, get(665), true);
             return;
         }
-        ShowList list = pc.list;
+        ShowList list = pc.getList();
         if (list == null) {//页面没有列表
             tip(p, get(670), true);
             return;
         }
-        int listMax = list.getMaxPage(pc.listSize);//列表最大页
+        int listMax = list.getMaxPage(pc.getListSize());//列表最大页
         if (page < 1 || page > listMax) {//页面超出范围
             tip(p, get(685), true);
             return;
         }
-        if (page == pc.listNow) {//已经处于这一页了
+        if (page == pc.getListNow()) {//已经处于这一页了
             tip(p, get(695), true);
             return;
         }
@@ -952,7 +979,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
             result.add(get(705, page));
             tipHash.put(p, result);
         }
-        pc.listNow = page;
+        pc.setListNow(page);
         reShow(pc);
     }
 
@@ -998,11 +1025,7 @@ public class ShowManager implements Listener, FunctionInterface, Refresh {
         listControl = get(725);
     }
 
-    private static FancyMessage get(int id) {
-        return FormatApi.get(ShowPlugin.pn, id);
-    }
-
-    private static FancyMessage get(int id, Object... args) {
-        return FormatApi.get(ShowPlugin.pn, id, args);
+    private FancyMessage get(String player, int id, Object... args) {
+        return config.getLang().get(player, id, args);
     }
 }
