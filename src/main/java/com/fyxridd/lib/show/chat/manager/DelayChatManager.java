@@ -51,7 +51,7 @@ public class DelayChatManager {
 
     //缓存
 
-    private HashMap<Player, Queue<FancyMessage>> delayChats;
+    private HashMap<Player, Queue<FancyMessage>> delayChats = new HashMap<>();
 
     public DelayChatManager() {
         //注册配置
@@ -61,8 +61,17 @@ public class DelayChatManager {
             @Override
             public void set(DelayChatConfig value) {
                 config = value;
+                //清空延时信息(因为maxSaves更新了)
+                delayChats.clear();
             }
         });
+        //监听玩家退出事件
+        Bukkit.getPluginManager().registerEvent(PlayerQuitEvent.class, ShowPlugin.instance, EventPriority.LOW, new EventExecutor() {
+            @Override
+            public void execute(Listener listener, Event e) throws EventException {
+                delayChats.remove(((PlayerQuitEvent) e).getPlayer());
+            }
+        }, ShowPlugin.instance);
         //监听聊天广播事件
         Bukkit.getPluginManager().registerEvent(PlayerChatBroadcastEvent.class, ShowPlugin.instance, EventPriority.NORMAL, new EventExecutor() {
             @Override
@@ -76,11 +85,6 @@ public class DelayChatManager {
         }, ShowPlugin.instance, true);
         //延时聊天
         Bukkit.getScheduler().scheduleSyncDelayedTask(ShowPlugin.instance, showTask, config.getInterval());
-    }
-
-    @EventHandler(priority= EventPriority.LOW)
-    public void onPlayerQuit(PlayerQuitEvent e) {
-        delayChats.remove(e.getPlayer());
     }
 
     /**
