@@ -70,7 +70,7 @@ public class DelayChatManager {
                 delayChats.remove(((PlayerQuitEvent) e).getPlayer());
             }
         }, ShowPlugin.instance);
-        //监听聊天广播事件
+        //监听聊天接收事件
         Bukkit.getPluginManager().registerEvent(PlayerChatReceiveEvent.class, ShowPlugin.instance, EventPriority.NORMAL, new EventExecutor() {
             @Override
             public void execute(Listener listener, Event e) throws EventException {
@@ -86,7 +86,7 @@ public class DelayChatManager {
     }
 
     /**
-     * @see CoreApi#addChat(Player, com.fyxridd.lib.core.api.inter.FancyMessage, boolean)
+     * @see ShowApi#addChat(Player, FancyMessage, boolean)
      */
     public void addChat(Player p, FancyMessage msg, boolean force) {
         if (p == null || msg == null) return;

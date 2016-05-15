@@ -3,9 +3,9 @@ package com.fyxridd.lib.show.chat.config;
 import com.fyxridd.lib.config.api.basic.Path;
 import com.fyxridd.lib.config.api.convert.PrimeConvert;
 import com.fyxridd.lib.config.api.limit.Min;
+import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.UtilApi;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
-import com.fyxridd.lib.core.fancymessage.FancyMessageImpl;
 
 @Path("delayChat")
 public class DelayChatConfig {
@@ -13,7 +13,7 @@ public class DelayChatConfig {
         @Override
         public FancyMessage convert(String plugin, String from) {
             if (from == null || from.isEmpty()) return null;
-            return new FancyMessageImpl(UtilApi.convert(from));
+            return MessageApi.convert(UtilApi.convert(from));
         }
     }
 
