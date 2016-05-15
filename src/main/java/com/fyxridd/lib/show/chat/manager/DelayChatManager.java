@@ -3,15 +3,16 @@ package com.fyxridd.lib.show.chat.manager;
 import com.fyxridd.lib.config.api.ConfigApi;
 import com.fyxridd.lib.config.manager.ConfigManager;
 import com.fyxridd.lib.core.api.CoreApi;
+import com.fyxridd.lib.core.api.event.PlayerChatBroadcastEvent;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 import com.fyxridd.lib.show.chat.ShowPlugin;
 import com.fyxridd.lib.show.chat.api.ShowApi;
 import com.fyxridd.lib.show.chat.config.DelayChatConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
+import org.bukkit.event.*;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.EventExecutor;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,6 +63,17 @@ public class DelayChatManager {
                 config = value;
             }
         });
+        //监听聊天广播事件
+        Bukkit.getPluginManager().registerEvent(PlayerChatBroadcastEvent.class, ShowPlugin.instance, EventPriority.NORMAL, new EventExecutor() {
+            @Override
+            public void execute(Listener listener, Event e) throws EventException {
+                PlayerChatBroadcastEvent event = (PlayerChatBroadcastEvent) e;
+                //添加聊天
+                addChat(event.getP(), event.getMsg(), false);
+                //取消事件
+                event.setCancelled(true);
+            }
+        }, ShowPlugin.instance, true);
         //延时聊天
         Bukkit.getScheduler().scheduleSyncDelayedTask(ShowPlugin.instance, showTask, config.getInterval());
     }
