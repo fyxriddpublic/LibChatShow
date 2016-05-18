@@ -1,5 +1,6 @@
 package com.fyxridd.lib.show.chat;
 
+import com.fyxridd.lib.core.api.config.ConfigApi;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -14,7 +15,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.projectiles.ProjectileSource;
 
-import com.fyxridd.lib.core.api.ConfigApi;
 import com.fyxridd.lib.core.api.event.PlayerChatEvent;
 import com.fyxridd.lib.core.api.event.RealDamageEvent;
 import com.fyxridd.lib.core.api.event.ReloadConfigEvent;

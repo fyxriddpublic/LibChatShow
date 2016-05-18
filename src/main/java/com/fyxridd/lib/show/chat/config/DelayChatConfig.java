@@ -1,10 +1,10 @@
 package com.fyxridd.lib.show.chat.config;
 
-import com.fyxridd.lib.config.api.basic.Path;
-import com.fyxridd.lib.config.api.convert.PrimeConvert;
-import com.fyxridd.lib.config.api.limit.Min;
 import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.UtilApi;
+import com.fyxridd.lib.core.api.config.basic.Path;
+import com.fyxridd.lib.core.api.config.convert.PrimeConvert;
+import com.fyxridd.lib.core.api.config.limit.Min;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 
 @Path("delayChat")

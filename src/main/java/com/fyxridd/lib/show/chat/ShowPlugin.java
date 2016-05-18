@@ -1,6 +1,6 @@
 package com.fyxridd.lib.show.chat;
 
-import com.fyxridd.lib.config.api.ConfigApi;
+import com.fyxridd.lib.core.api.config.ConfigApi;
 import com.fyxridd.lib.core.api.plugin.SimplePlugin;
 import com.fyxridd.lib.show.chat.config.DelayChatConfig;
 import com.fyxridd.lib.show.chat.config.ShowConfig;
