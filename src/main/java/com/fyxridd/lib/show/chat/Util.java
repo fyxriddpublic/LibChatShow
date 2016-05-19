@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Util {
-    private final String CON_PREFIX_MATH_COMPARE = "m";
-    private final String CON_PREFIX_STRING_COMPARE = "s";
-    private final String CON_PREFIX_STRING_HAS = "c";
+    private static final String CON_PREFIX_MATH_COMPARE = "m";
+    private static final String CON_PREFIX_STRING_COMPARE = "s";
+    private static final String CON_PREFIX_STRING_HAS = "c";
 
     /**
      * @see com.fyxridd.lib.show.chat.api.ShowApi#convert(FancyMessage, Object...)
