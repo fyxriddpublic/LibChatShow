@@ -1,6 +1,5 @@
 package com.fyxridd.lib.show.chat.manager;
 
-import com.fyxridd.lib.core.api.CoreApi;
 import com.fyxridd.lib.core.api.config.ConfigApi;
 import com.fyxridd.lib.core.api.event.PlayerChatReceiveEvent;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;

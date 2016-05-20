@@ -5,7 +5,6 @@ import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessagePart;
 import com.fyxridd.lib.core.api.hashList.HashList;
 import com.fyxridd.lib.show.chat.api.condition.Condition;
-import com.fyxridd.lib.show.chat.api.fancymessage.Convertable;
 import com.fyxridd.lib.show.chat.condition.MathCompareCondition;
 import com.fyxridd.lib.show.chat.condition.StringCompareCondition;
 import com.fyxridd.lib.show.chat.condition.StringHasCondition;
@@ -19,33 +18,6 @@ public class Util {
     private static final String CON_PREFIX_MATH_COMPARE = "m";
     private static final String CON_PREFIX_STRING_COMPARE = "s";
     private static final String CON_PREFIX_STRING_HAS = "c";
-
-    /**
-     * @see com.fyxridd.lib.show.chat.api.ShowApi#convert(FancyMessage, Object...)
-     */
-    public static void convert(FancyMessage msg, Object... replace) {
-        for (FancyMessagePart mp:msg.getMessageParts().values()) {
-            if (mp instanceof Convertable) ((Convertable) mp).convert(replace);
-        }
-    }
-
-    /**
-     * @see com.fyxridd.lib.show.chat.api.ShowApi#convert(FancyMessage, String, String)
-     */
-    public static void convert(FancyMessage msg, String from, Object to) {
-        for (FancyMessagePart mp:msg.getMessageParts().values()) {
-            if (mp instanceof Convertable) ((Convertable) mp).convert(from, to);
-        }
-    }
-
-    /**
-     * @see com.fyxridd.lib.show.chat.api.ShowApi#convert(FancyMessage, HashMap)
-     */
-    public static void convert(FancyMessage msg, HashMap<String, Object> replace) {
-        for (FancyMessagePart mp:msg.getMessageParts().values()) {
-            if (mp instanceof Convertable) ((Convertable) mp).convert(replace);
-        }
-    }
 
     /**
      * @see com.fyxridd.lib.show.chat.api.ShowApi#load(String, ConfigurationSection)
@@ -100,7 +72,7 @@ public class Util {
                 }
                 //装配
                 FancyMessagePart mp = map.get(index);
-                FancyMessagePartExtra mpe = new FancyMessagePartExtra(mp.getText(), mp.getColor(), mp.getStyles(), mp.getClickActionName(), mp.getClickActionData(), mp.getHoverActionName(), mp.getHoverActionData(), hasFix, listFix, conExp, conParams, item, updateFlag);
+                FancyMessagePartExtra mpe = new FancyMessagePartExtra(mp.getText(), mp.getColor(), mp.getStyles(), mp.getClickActionName(), mp.getClickActionData(), mp.getHoverActionName(), mp.getHoverActionData(), hasFix, updateFlag, listFix, conExp, conParams, item);
                 //更新
                 map.put(index, mpe);
             }

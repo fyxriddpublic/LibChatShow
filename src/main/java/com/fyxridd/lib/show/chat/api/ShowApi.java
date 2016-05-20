@@ -1,5 +1,7 @@
 package com.fyxridd.lib.show.chat.api;
 
+import java.util.Map;
+import com.fyxridd.lib.core.api.fancymessage.Convertable;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 
 import com.fyxridd.lib.show.chat.ShowPlugin;
@@ -18,32 +20,6 @@ public class ShowApi {
      */
     public static void addChat(Player p, FancyMessage msg, boolean force) {
         ShowPlugin.instance.getDelayChatManager().addChat(p, msg, force);
-    }
-
-    /**
-     * 转换变量(如果无法转换则不会转换)
-     * @see com.fyxridd.lib.show.chat.api.fancymessage.Convertable#convert(Object...)
-     * @param msg 信息
-     * @param replace 变量
-     */
-    public static void convert(FancyMessage msg, Object... replace) {
-        Util.convert(msg, replace);
-    }
-
-    /**
-     * 转换单个变量(如果无法转换则不会转换)
-     * @see com.fyxridd.lib.show.chat.api.fancymessage.Convertable#convert(String, Object)
-     */
-    public static void convert(FancyMessage msg, String from, String to) {
-        Util.convert(msg, from, to);
-    }
-
-    /**
-     * 转换变量(如果无法转换则不会转换)
-     * @see com.fyxridd.lib.show.chat.api.fancymessage.Convertable#convert(HashMap)
-     */
-    public static void convert(FancyMessage msg, HashMap<String, Object> replace) {
-        Util.convert(msg, replace);
     }
 
     /**

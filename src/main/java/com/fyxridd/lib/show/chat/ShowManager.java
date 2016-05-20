@@ -4,9 +4,6 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
-import com.fyxridd.lib.config.api.ConfigApi;
-import com.fyxridd.lib.config.manager.ConfigManager;
-import com.fyxridd.lib.core.CoreManager;
 import com.fyxridd.lib.core.api.CoreApi;
 import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.UtilApi;
@@ -123,10 +120,13 @@ public class ShowManager implements FunctionInterface, Refresh {
                 @Override
                 public void execute(Listener listener, Event e) throws EventException {
                     PlayerTipEvent event = (PlayerTipEvent) e;
-                    if (event.isForce()) {//强制显示
-                        tip(event.getP(), event.getMsg(), true);
-                    }else {//非强制显示
-                        if (isInPage(event.getP())) event.setCancelled(true);
+                    if (isInPage(event.getP())) {
+                        if (event.isForce()) {//强制显示
+                            //取消事件
+                            event.setCancelled(true);
+                            //使用自己的处理方法
+                            tip(event.getP(), event.getMsgs(), true);
+                        }else event.setCancelled(true);
                     }
                 }
             }, ShowPlugin.instance, true);
