@@ -1,15 +1,11 @@
 package com.fyxridd.lib.show.chat.api;
 
-import java.util.Map;
-import com.fyxridd.lib.core.api.fancymessage.Convertable;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 
 import com.fyxridd.lib.show.chat.ShowPlugin;
 import com.fyxridd.lib.show.chat.Util;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-
-import java.util.HashMap;
 
 public class ShowApi {
     /**
