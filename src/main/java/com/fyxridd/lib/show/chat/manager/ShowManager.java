@@ -136,28 +136,28 @@ public class ShowManager {
     /**
      * @see ShowApi#show(Refresh, Object, Player, String, String, ShowList, Map, int, int, List, List, Map)
      */
-    public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList list, Map<String, Object> data, List<FancyMessage> front, List<FancyMessage> behind) {
-        show(refresh, obj, p, plugin, pageName, list, data, DEFAULT_PAGE_NOW, DEFAULT_LIST_NOW, front, behind, null);
+    public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList list, List<FancyMessage> front, List<FancyMessage> behind) {
+        show(refresh, obj, p, plugin, pageName, list, DEFAULT_PAGE_NOW, DEFAULT_LIST_NOW, front, behind, null);
     }
 
     /**
      * @see ShowApi#show(Refresh, Object, Player, String, String, ShowList, Map, int, int, List, List, Map)
      */
-    public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList<Object> list, Map<String, Object> data, int pageNow, int listNow, List<FancyMessage> front, List<FancyMessage> behind) {
-        show(refresh, obj, p, plugin, pageName, list, data, pageNow, listNow, front, behind, null);
+    public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList<Object> list, int pageNow, int listNow, List<FancyMessage> front, List<FancyMessage> behind) {
+        show(refresh, obj, p, plugin, pageName, list, pageNow, listNow, front, behind, null);
     }
 
     /**
      * @see ShowApi#show(Refresh, Object, Player, String, String, ShowList, Map, int, int, List, List, Map)
      */
-    public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList<Object> list, Map<String, Object> data, List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
-        show(refresh, obj, p, plugin, pageName, list, data, DEFAULT_PAGE_NOW, DEFAULT_LIST_NOW, front, behind, itemHash);
+    public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList<Object> list, List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
+        show(refresh, obj, p, plugin, pageName, list, DEFAULT_PAGE_NOW, DEFAULT_LIST_NOW, front, behind, itemHash);
     }
 
     /**
      * @see ShowApi#show(Refresh, Object, Player, String, String, ShowList, Map, int, int, List, List, Map)
      */
-    public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList<Object> list, Map<String, Object> data, int pageNow, int listNow, List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
+    public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList<Object> list, int pageNow, int listNow, List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
         String name = p.getName();
         //注意!此方法内不能调用tip()方法,而应该用setTip()代替,否则会出现死循环
         try {
@@ -181,7 +181,6 @@ public class ShowManager {
                     pc.getPlugin().equals(plugin) &&
                     pc.getPageName().equals(pageName) &&
                     pc.getList() == list &&
-                    pc.getData() == data &&
                     pc.getPageNow() == pageNow &&
                     pc.getListNow() == listNow) {//是当前页面上下文在调用
                     playerContexts.remove(p);
@@ -357,7 +356,6 @@ public class ShowManager {
                 pc.setPageName(pageName);
                 pc.setListSize(listSize);
                 pc.setList(list);
-                pc.setData(data);
                 pc.setPageNow(pageNow);
                 pc.setListNow(listNow);
                 pc.setFront(front);
@@ -439,7 +437,7 @@ public class ShowManager {
         if (!noRefresh && page.isRefresh() && pc.getRefresh() != null) {//刷新
             pc.getRefresh().refresh(pc);
         }else {//不刷新
-            show(pc.getRefresh(), pc.getObj(), pc.getP(), pc.getPlugin(), pc.getPageName(), pc.getList(), pc.getData(), pc.getPageNow(),
+            show(pc.getRefresh(), pc.getObj(), pc.getP(), pc.getPlugin(), pc.getPageName(), pc.getList(), pc.getPageNow(),
                     pc.getListNow(), pc.getFront(), pc.getBehind(), pc.getItemHash());
         }
         //显示正常结束,去除

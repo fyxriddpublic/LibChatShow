@@ -77,26 +77,25 @@ public class ShowApi {
      * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
      */
     public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
-                            ShowList list, Map<String, Object> data, List<FancyMessage> front, List<FancyMessage> behind) {
-        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, data, front, behind);
+                            ShowList list, List<FancyMessage> front, List<FancyMessage> behind) {
+        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, front, behind);
     }
 
     /**
      * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
      */
     public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
-                            ShowList<Object> list, Map<String, Object> data, int pageNow, int listNow,
+                            ShowList<Object> list, int pageNow, int listNow,
                             List<FancyMessage> front, List<FancyMessage> behind) {
-        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, data, pageNow, listNow, front, behind);
+        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, pageNow, listNow, front, behind);
     }
 
     /**
      * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
      */
     public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
-                            ShowList<Object> list, Map<String, Object> data,
-                            List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
-        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, data, front, behind, itemHash);
+                            ShowList<Object> list, List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
+        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, front, behind, itemHash);
     }
 
     /**
@@ -115,9 +114,9 @@ public class ShowApi {
      * @param itemHash 物品信息替换,可为null
      */
     public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
-                            ShowList<Object> list, Map<String, Object> data, int pageNow, int listNow,
+                            ShowList<Object> list, int pageNow, int listNow,
                             List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
-        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, data, pageNow, listNow, front, behind, itemHash);
+        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, pageNow, listNow, front, behind, itemHash);
     }
 
     /**

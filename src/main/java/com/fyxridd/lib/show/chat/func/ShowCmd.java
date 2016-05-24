@@ -266,9 +266,9 @@ public class ShowCmd {
         ShowApi.show(new Refresh() {
             @Override
             public void refresh(PlayerContext pc) {
-                ShowApi.show(pc.getRefresh(), pc.getObj(), pc.getP(), pc.getPlugin(), pc.getPageName(), pc.getList(), pc.getData(), pc.getPageNow(), pc.getListNow(), pc.getFront(), pc.getBehind(), pc.getItemHash());
+                ShowApi.show(pc.getRefresh(), pc.getObj(), pc.getP(), pc.getPlugin(), pc.getPageName(), pc.getList(), pc.getPageNow(), pc.getListNow(), pc.getFront(), pc.getBehind(), pc.getItemHash());
             }
-        }, pageName, p, ShowPlugin.instance.pn, pageName, null, null, 1, 1, null, null, null);
+        }, pageName, p, ShowPlugin.instance.pn, pageName, null, 1, 1, null, null, null);
     }
 
     /**
