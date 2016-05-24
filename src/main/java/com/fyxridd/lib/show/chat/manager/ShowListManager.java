@@ -15,7 +15,7 @@ public class ShowListManager {
     private Map<String, Map<String, ShowListGetter<?>>> handleHash = new HashMap<>();
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#register(String, String, com.fyxridd.lib.core.api.inter.ShowListGetter)
+     * @see ShowApi#register(String, String, ShowListGetter)
      */
     public void register(String plugin, String key, ShowListGetter<?> showListGetter) {
         if (!handleHash.containsKey(plugin)) handleHash.put(plugin, new HashMap<String, ShowListGetter<?>>());

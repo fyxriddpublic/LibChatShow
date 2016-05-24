@@ -80,11 +80,6 @@ public class StringHasCondition implements Condition, Convertable{
         this.to = this.to.replace(from, to.toString());
     }
 
-    @Override
-    public String getConvertedStr() {
-        return from+" "+to;
-    }
-
     /**
      * 从条件字符串读取条件
      * @param condition 条件字符串

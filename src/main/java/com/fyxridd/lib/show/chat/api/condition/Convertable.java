@@ -11,9 +11,4 @@ public interface Convertable {
      * @param to 值
      */
     void convert(String from, Object to);
-    
-    /**
-     * @return 需要将所有的变量都暴露到字符串中，这样可以检测是否存在变量
-     */
-    String getConvertedStr();
 }

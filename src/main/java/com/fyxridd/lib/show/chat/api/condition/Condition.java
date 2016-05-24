@@ -8,5 +8,5 @@ public interface Condition extends Cloneable{
      * 检测条件是否满足
      * @return 是否满足
      */
-    public boolean check();
+    boolean check();
 }

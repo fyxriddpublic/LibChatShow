@@ -7,32 +7,30 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.fyxridd.lib.core.api.CoreApi;
 import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.PerApi;
-import com.fyxridd.lib.core.api.UtilApi;
 import com.fyxridd.lib.core.api.config.ConfigApi;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessagePart;
 import com.fyxridd.lib.core.config.ConfigManager;
-import com.fyxridd.lib.params.api.ParamsConverter;
-import com.fyxridd.lib.params.api.ParamsFactory;
+import com.fyxridd.lib.func.api.FuncApi;
 import com.fyxridd.lib.params.api.Session;
 import com.fyxridd.lib.show.chat.ShowPlugin;
 import com.fyxridd.lib.show.chat.api.ShowApi;
 import com.fyxridd.lib.show.chat.api.event.PlayerPageExitEvent;
 import com.fyxridd.lib.show.chat.api.fancymessage.Conditional;
 import com.fyxridd.lib.show.chat.api.fancymessage.Itemable;
-import com.fyxridd.lib.show.chat.api.page.*;
+import com.fyxridd.lib.show.chat.api.page.LineContext;
+import com.fyxridd.lib.show.chat.api.page.Page;
 import com.fyxridd.lib.show.chat.api.show.PlayerContext;
 import com.fyxridd.lib.show.chat.api.show.Refresh;
 import com.fyxridd.lib.show.chat.api.show.ShowList;
+import com.fyxridd.lib.show.chat.config.LangConfig;
 import com.fyxridd.lib.show.chat.config.ShowConfig;
 import com.fyxridd.lib.show.chat.fancymessage.FancyMessagePartExtra;
-import com.fyxridd.lib.show.chat.impl.PageImpl;
-
+import com.fyxridd.lib.show.chat.func.ShowCmd;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -51,36 +49,45 @@ public class ShowManager {
      */
     private static final int DEFAULT_LIST_NOW = 1;
 
-    private ShowConfig config;
+    private LangConfig langConfig;
+    private ShowConfig showConfig;
 
     /**
      * 插件名 页面名 页面
      */
-    private Map<String, Map<String, Page>> pageHash = new HashMap<>();
+    private Map<String, Map<String, Page>> pages = new HashMap<>();
 
     /**
      * 玩家 玩家页面上下文
      */
-    private Map<Player, PlayerContext> playerContextHash = new HashMap<>();
+    private Map<Player, PlayerContext> playerContexts = new HashMap<>();
     /**
      * 玩家 返回页面保存列表
      */
-    private Map<Player, List<PlayerContext>> backHash = new HashMap<>();
+    private Map<Player, List<PlayerContext>> backs = new HashMap<>();
     /**
      * 玩家 提示
      */
-    private Map<Player, List<FancyMessage>> tipHash = new HashMap<>();
+    private Map<Player, List<FancyMessage>> tips = new HashMap<>();
     /**
      * 正在重新显示的中的玩家列表(用来防止显示死循环),玩家 调用层数
      */
-    private Map<Player, Integer> reShowHash = new HashMap<>();
+    private Map<Player, Integer> reShows = new HashMap<>();
 
     public ShowManager() {
+        //注册功能
+        FuncApi.register(ShowPlugin.instance.pn, new ShowCmd());
         //添加配置监听
+        ConfigApi.addListener(ShowPlugin.instance.pn, LangConfig.class, new ConfigManager.Setter<LangConfig>() {
+            @Override
+            public void set(LangConfig value) {
+                langConfig = value;
+            }
+        });
         ConfigApi.addListener(ShowPlugin.instance.pn, ShowConfig.class, new ConfigManager.Setter<ShowConfig>() {
             @Override
             public void set(ShowConfig value) {
-                config = value;
+                showConfig = value;
             }
         });
         //监听限制聊天包
@@ -97,7 +104,7 @@ public class ShowManager {
      */
     public void register(String plugin) {
         //重新注册插件的所有页面
-        pageHash.put(plugin, new HashMap<String, Page>());
+        pages.put(plugin, new HashMap<String, Page>());
         //读取
         File dir = new File(CoreApi.pluginPath, plugin+File.separator+"show");
         if (dir.exists() && dir.isDirectory()) {
@@ -118,50 +125,50 @@ public class ShowManager {
     public void register(String plugin, String name) {
         //读取页面信息
         try {
-            Page page = load(plugin, name);
-            if (!pageHash.containsKey(plugin)) pageHash.put(plugin, new HashMap<String, Page>());
-            pageHash.get(plugin).put(name, page);
+            Page page = ShowApi.loadPage(plugin, name);
+            if (!pages.containsKey(plugin)) pages.put(plugin, new HashMap<String, Page>());
+            pages.get(plugin).put(name, page);
         } catch (Exception e) {
-            //TODO
+            //todo
         }
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#show(com.fyxridd.lib.core.api.inter.ShowInterface, Object, Player, String, String, com.fyxridd.lib.core.api.inter.ShowList, HashMap, int, int, List, List, HashMap)
+     * @see ShowApi#show(Refresh, Object, Player, String, String, ShowList, Map, int, int, List, List, Map)
      */
     public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList list, Map<String, Object> data, List<FancyMessage> front, List<FancyMessage> behind) {
         show(refresh, obj, p, plugin, pageName, list, data, DEFAULT_PAGE_NOW, DEFAULT_LIST_NOW, front, behind, null);
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#show(com.fyxridd.lib.core.api.inter.ShowInterface, Object, Player, String, String, com.fyxridd.lib.core.api.inter.ShowList, HashMap, int, int, List, List, HashMap)
+     * @see ShowApi#show(Refresh, Object, Player, String, String, ShowList, Map, int, int, List, List, Map)
      */
     public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList<Object> list, Map<String, Object> data, int pageNow, int listNow, List<FancyMessage> front, List<FancyMessage> behind) {
         show(refresh, obj, p, plugin, pageName, list, data, pageNow, listNow, front, behind, null);
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#show(com.fyxridd.lib.core.api.inter.ShowInterface, Object, Player, String, String, com.fyxridd.lib.core.api.inter.ShowList, HashMap, int, int, List, List, HashMap)
+     * @see ShowApi#show(Refresh, Object, Player, String, String, ShowList, Map, int, int, List, List, Map)
      */
     public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList<Object> list, Map<String, Object> data, List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
         show(refresh, obj, p, plugin, pageName, list, data, DEFAULT_PAGE_NOW, DEFAULT_LIST_NOW, front, behind, itemHash);
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#show(com.fyxridd.lib.core.api.inter.ShowInterface, Object, Player, String, String, com.fyxridd.lib.core.api.inter.ShowList, HashMap, int, int, List, List, HashMap)
+     * @see ShowApi#show(Refresh, Object, Player, String, String, ShowList, Map, int, int, List, List, Map)
      */
     public void show(Refresh refresh, Object obj, Player p, String plugin, String pageName, ShowList<Object> list, Map<String, Object> data, int pageNow, int listNow, List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
         String name = p.getName();
         //注意!此方法内不能调用tip()方法,而应该用setTip()代替,否则会出现死循环
         try {
             //玩家页面上下文
-            PlayerContext pc = playerContextHash.get(p);
+            PlayerContext pc = playerContexts.get(p);
             //读取页面
             Page page = null;
             //读取是否成功
             boolean read;
             try {
-                page = pageHash.get(plugin).get(pageName);
+                page = pages.get(plugin).get(pageName);
                 read = true;
             } catch (Exception e) {
                 read = false;
@@ -177,7 +184,7 @@ public class ShowManager {
                     pc.getData() == data &&
                     pc.getPageNow() == pageNow &&
                     pc.getListNow() == listNow) {//是当前页面上下文在调用
-                    playerContextHash.remove(p);
+                    playerContexts.remove(p);
                 }else setTip(p, get(name, 645));
                 return;
             }
@@ -202,7 +209,7 @@ public class ShowManager {
             List<Integer> showPage = page.getPageList().get(pageNow-1).getContent();//显示的页面
             List<FancyMessage> resultPage = new ArrayList<>();//结果页面,复制版
             for (int line: showPage) {
-                FancyMessage msg = getMsg(name, page.getLines(), line);
+                FancyMessage msg = ShowApi.getMsg(name, page.getLines(), line);
                 if (msg == null) continue;
                 resultPage.add(msg.clone());
             }
@@ -279,7 +286,7 @@ public class ShowManager {
             }
 
             //提示变量
-            Map<String, String> strDefaults = new HashMap<String, String>();
+            Map<String, String> strDefaults = new HashMap<>();
             strDefaults.put("name", p.getName());
             strDefaults.put("displayName", p.getDisplayName());
             strDefaults.put("pageNow", ""+pageNow);
@@ -331,16 +338,16 @@ public class ShowManager {
             if (page.isRecord()) {
                 if (pc == null) {
                     pc = new PlayerContext();
-                    playerContextHash.put(p, pc);
+                    playerContexts.put(p, pc);
                 }else if (!pc.getPlugin().equals(plugin) ||
                         !pc.getPageName().equals(pageName)) {//显示的页面与原来不同,保存返回页面
-                    List<PlayerContext> backList = backHash.get(p);
+                    List<PlayerContext> backList = backs.get(p);
                     if (backList == null) {
-                        backList = new ArrayList<PlayerContext>();
-                        backHash.put(p, backList);
+                        backList = new ArrayList<>();
+                        backs.put(p, backList);
                     }
                     backList.add(pc.clone());
-                    if (backList.size() > config.getMaxBackPage()) backList.remove(0);
+                    if (backList.size() > showConfig.getMaxBackPage()) backList.remove(0);
                 }
                 //更新玩家页面上下文信息
                 pc.setRefresh(refresh);
@@ -360,9 +367,9 @@ public class ShowManager {
 
             //补空行
             if (page.isFillEmpty()) {
-                int empty = config.getLine()-(page.isHandleTip()?2:0)-resultPage.size()-(front != null?front.size():0)-(behind != null?behind.size():0);
+                int empty = showConfig.getLine()-(page.isHandleTip()?2:0)-resultPage.size()-(front != null?front.size():0)-(behind != null?behind.size():0);
                 if (empty > 0) {
-                    FancyMessage msg = get(name, config.getAdd());
+                    FancyMessage msg = get(name, showConfig.getAdd());
                     for (int i=0;i<empty;i++) MessageApi.sendChatPacket(p, msg);
                 }
             }
@@ -376,27 +383,27 @@ public class ShowManager {
             }
             //显示页面尾部操作提示
             if (page.isHandleTip()) {
-                MessageApi.sendChatPacket(p, get(name, config.getOperateTipMenu()));
-                List<FancyMessage> tipList = tipHash.get(p);
+                MessageApi.sendChatPacket(p, get(name, showConfig.getOperateTipMenu()));
+                List<FancyMessage> tipList = tips.get(p);
                 if (tipList != null) {
                     for (FancyMessage tip: tipList) MessageApi.sendChatPacket(p, tip);
-                }else MessageApi.sendChatPacket(p, get(name, config.getOperateTipEmpty()));
+                }else MessageApi.sendChatPacket(p, get(name, showConfig.getOperateTipEmpty()));
             }
         } catch (Exception e) {
             e.printStackTrace();
             CoreApi.debug(e.getMessage());
-            playerContextHash.remove(p);
+            playerContexts.remove(p);
             setTip(p, get(name, 655));
         }
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#getMsg(LinkedHashMap, int)
+     * @see ShowApi#getMsg(String, Map, int)
      */
     public FancyMessage getMsg(String player, Map<Integer, LineContext> lines, int line) {
         try {
-            if (line == -1) return get(player, config.getPageControl());
-            else if (line == -2) return get(player, config.getListControl());
+            if (line == -1) return get(player, showConfig.getPageControl());
+            else if (line == -2) return get(player, showConfig.getListControl());
             else return lines.get(line).getMsg();
         } catch (Exception e) {
             return null;
@@ -404,14 +411,14 @@ public class ShowManager {
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#reShow(com.fyxridd.lib.core.api.inter.PlayerContext, boolean)
+     * @see ShowApi#reShow(PlayerContext, boolean)
      */
     public void reShow(PlayerContext pc) {
         reShow(pc, false);
     }
 
     /**
-     * @see ShowApi#reShow(com.fyxridd.lib.core.api.inter.PlayerContext, boolean)
+     * @see ShowApi#reShow(PlayerContext, boolean)
      */
     public void reShow(PlayerContext pc, boolean noRefresh) {
         if (pc == null) return;
@@ -420,11 +427,11 @@ public class ShowManager {
         Player p = pc.getP();
         if (p == null) return;
         //防止死循环
-        if (!reShowHash.containsKey(p)) reShowHash.put(p, 1);
-        else reShowHash.put(p, reShowHash.get(p)+1);
-        if (reShowHash.get(p) > config.getDeadLoopLevel()) {//判定为死循环
+        if (!reShows.containsKey(p)) reShows.put(p, 1);
+        else reShows.put(p, reShows.get(p)+1);
+        if (reShows.get(p) > showConfig.getDeadLoopLevel()) {//判定为死循环
             CoreApi.debug("Dead Loop Checked!!!Auto remove!");
-            reShowHash.remove(p);//去除
+            reShows.remove(p);//去除
             ShowApi.exit(pc.getP(), false);
             return;
         }
@@ -436,44 +443,44 @@ public class ShowManager {
                     pc.getListNow(), pc.getFront(), pc.getBehind(), pc.getItemHash());
         }
         //显示正常结束,去除
-        reShowHash.remove(p);
+        reShows.remove(p);
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#back(Player)
+     * @see ShowApi#back(Player)
      */
     public void back(Player p) {
-        List<PlayerContext> backList = backHash.get(p);
+        List<PlayerContext> backList = backs.get(p);
         if (backList == null || backList.isEmpty()) {//退出页面
             ShowApi.exit(p, true);
             return;
         }
         //返回
         PlayerContext backContext = backList.remove(backList.size()-1);
-        playerContextHash.put(p, backContext);
-        List<FancyMessage> tipList = new ArrayList<FancyMessage>();
+        playerContexts.put(p, backContext);
+        List<FancyMessage> tipList = new ArrayList<>();
         tipList.add(get(p.getName(), 660));
-        tipHash.put(p, tipList);
+        tips.put(p, tipList);
         reShow(backContext);
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#exit(Player, boolean)
+     * @see ShowApi#exit(Player, boolean)
      */
     public void exit(Player p, boolean tip) {
         exit(p, tip, true);
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#exit(Player, boolean, boolean)
+     * @see ShowApi#exit(Player, boolean, boolean)
      */
     public void exit(Player p, boolean tip, boolean successTip) {
         //缓存
-        reShowHash.remove(p);
-        backHash.remove(p);
-        tipHash.remove(p);
+        reShows.remove(p);
+        backs.remove(p);
+        tips.remove(p);
         //当前没有查看的页面
-        if (playerContextHash.remove(p) == null) {
+        if (playerContexts.remove(p) == null) {
             if(tip) tip(p, get(p.getName(), 665), true);
             return;
         }
@@ -484,7 +491,7 @@ public class ShowManager {
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#tip(Player, List, boolean)
+     * @see ShowApi#tip(Player, List, boolean)
      */
     public void tip(Player p, String msg, boolean force) {
         if (msg == null) return;
@@ -492,7 +499,7 @@ public class ShowManager {
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#tip(Player, List, boolean)
+     * @see ShowApi#tip(Player, List, boolean)
      */
     public void tip(Player p, FancyMessage msg, boolean force) {
         List<FancyMessage> tipList = new ArrayList<>();
@@ -501,167 +508,79 @@ public class ShowManager {
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#tip(Player, List, boolean)
+     * @see ShowApi#tip(Player, List, boolean)
      */
     public void tip(Player p, List<FancyMessage> msgList, boolean force) {
         if (msgList == null) return;
-        PlayerContext pc = playerContextHash.get(p);
+        PlayerContext pc = playerContexts.get(p);
         if (pc == null) {
             for (FancyMessage tip:msgList) MessageApi.sendChatPacket(p, tip);
         }else if (force){
-            tipHash.put(p, msgList);
+            tips.put(p, msgList);
             reShow(pc);
         }
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#setTip(Player, List)
+     * @see ShowApi#setTip(Player, List)
      */
     public void setTip(Player p, FancyMessage tip) {
-        List<FancyMessage> list = new ArrayList<FancyMessage>();
+        List<FancyMessage> list = new ArrayList<>();
         list.add(tip);
         setTip(p, list);
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#setTip(Player, List)
+     * @see ShowApi#setTip(Player, List)
      */
     public void setTip(Player p, List<FancyMessage> tip) {
-        tipHash.put(p, tip);
+        tips.put(p, tip);
     }
 
     /**
      * @see ShowApi#clearTip(Player, boolean)
      */
     public void clearTip(Player p, boolean show) {
-        tipHash.remove(p);
+        tips.remove(p);
         if (show) {
             //玩家开启界面的情况下才进行重新显示
-            PlayerContext pc = playerContextHash.get(p);
+            PlayerContext pc = playerContexts.get(p);
             if (pc != null) reShow(pc);
         }
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#hasRegistered(String, String)
+     * @see ShowApi#hasRegistered(String, String)
      */
     public boolean hasRegistered(String plugin, String page) {
         if (plugin == null || page == null) return false;
-        return pageHash.containsKey(plugin) && pageHash.get(plugin).containsKey(page);
+        return pages.containsKey(plugin) && pages.get(plugin).containsKey(page);
     }
 
     /**
-     * @see com.fyxridd.lib.core.api.ShowApi#getPage(String, String)
+     * @see ShowApi#getPage(String, String)
      */
     public Page getPage(String plugin, String page) {
         if (plugin == null || page == null) return null;
-        if (hasRegistered(plugin, page)) return pageHash.get(plugin).get(page);
+        if (hasRegistered(plugin, page)) return pages.get(plugin).get(page);
         else return null;
     }
 
     /**
-     * @see ShowApi#load(String, String)
-     */
-    public Page load(String plugin, String page) throws Exception {
-        String path = CoreApi.pluginPath+ File.separator+plugin+File.separator+"show"+File.separator+page+".yml";
-        File file = new File(path);
-        file.getParentFile().mkdirs();
-        file.createNewFile();
-        return load(plugin, page, file);
-    }
-
-    public Page load(String plugin, String page, File file) throws Exception {
-        return load(plugin, page, UtilApi.loadConfigByUTF8(file));
-    }
-
-    /**
-     * @see com.fyxridd.lib.core.api.ShowApi#load(String, String, YamlConfiguration)
-     */
-    public Page load(String plugin, String page, ConfigurationSection config) throws Exception {
-        //enable
-        boolean enable = config.getBoolean("enable", true);
-        //pageMax
-        int pageMax = config.getInt("pageMax", 0);
-        if (pageMax < 0) {
-            throw new Exception("pageMax must >= 0");
-        }
-        //listSize
-        int listSize = config.getInt("listSize", 0);
-        if (listSize < 0) {
-            throw new Exception("listSize must >= 0");
-        }
-        //refresh
-        boolean refresh = config.getBoolean("refresh", false);
-        //per
-        String per = config.getString("per");
-        //fillEmpty
-        boolean fillEmpty = config.getBoolean("fillEmpty", true);
-        //handleTip
-        boolean handleTip = config.getBoolean("handleTip", true);
-        //record
-        boolean record = config.getBoolean("record", true);
-        //ListInfo
-        ListInfo listInfo;
-        {
-            String listPlugin = config.getString("list.plugin");
-            String listKey = config.getString("list.key");
-            String listArg = config.getString("list.arg");
-            if (listPlugin == null || listPlugin.isEmpty()) listInfo = null;
-            else listInfo = new ListInfo(listPlugin, listKey, listArg);
-        }
-        //ParamsFactory
-        ParamsFactory paramsFactory = new ParamsConverter().convert(plugin, config.getConfigurationSection("params"));
-        //lines
-        LinkedHashMap<Integer, LineContext> lines = new LinkedHashMap<>();
-        for (String key: config.getValues(false).keySet()) {//遍历所有的show-xxx
-            try {
-                if (key.startsWith("show-")) {
-                    int num = Integer.parseInt(key.substring(5));
-                    String msg = UtilApi.convert(config.getString("show-" + num, null));
-                    if (msg == null) {//show-xxx为null
-                        throw new Exception("msg is null!");
-                    }
-                    FancyMessage line = MessageApi.load(msg, (ConfigurationSection) config.get("info-" + num));
-                    if (line == null) {//info-xxx配置错误
-                        throw new Exception("msg error!");
-                    }
-                    LineContext lc = new LineContext(num, line);
-                    lines.put(num, lc);
-                }
-            } catch (Exception e) {
-                throw new Exception("load '"+key+"' error: "+e.getMessage(), e);
-            }
-        }
-        //pageList
-        List<PageContext> pageList = new ArrayList<>();
-        for (int index = 1;index<=pageMax;index++) {
-            try {
-                String[] ss = config.getString("page-"+index, "").split(" ");
-                List<Integer> list = new ArrayList<Integer>();
-                for (String check:ss) list.add(Integer.parseInt(check));
-                pageList.add(new PageContext(index, list));
-            } catch (Exception e) {
-                throw new Exception("load page "+index+" error: "+e.getMessage(), e);
-            }
-        }
-        return new PageImpl(plugin, page, enable, pageMax, listSize, refresh, per, fillEmpty, handleTip, record, listInfo, paramsFactory, pageList, lines);
-    }
-
-    /**
-     * @see com.fyxridd.lib.core.api.ShowApi#isInPage(Player)
+     * @see ShowApi#isInPage(Player)
      */
     public boolean isInPage(Player p) {
-        return playerContextHash.containsKey(p);
+        return playerContexts.containsKey(p);
     }
 
     /**
      * @see ShowApi#getPlayerContext(Player)
      */
     public PlayerContext getPlayerContext(Player p) {
-        return playerContextHash.get(p);
+        return playerContexts.get(p);
     }
 
     private FancyMessage get(String player, int id, Object... args) {
-        return config.getLang().get(player, id, args);
+        return langConfig.getLang().get(player, id, args);
     }
 }

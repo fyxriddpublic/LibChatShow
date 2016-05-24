@@ -1,52 +1,42 @@
 package com.fyxridd.lib.show.chat.config;
 
 import com.fyxridd.lib.core.api.config.basic.Path;
-import com.fyxridd.lib.core.api.config.convert.ConfigConvert;
 import com.fyxridd.lib.core.api.config.limit.Min;
-import com.fyxridd.lib.core.api.lang.LangConverter;
-import com.fyxridd.lib.core.api.lang.LangGetter;
 
+@Path("show")
 public class ShowConfig {
-    @Path("lang")
-    @ConfigConvert(LangConverter.class)
-    private LangGetter lang;
-
-    @Path("show.deadLoopLevel")
+    @Path("deadLoopLevel")
     @Min(1)
     private int deadLoopLevel;
-    @Path("show.cancel.interact")
+    @Path("cancel.interact")
     private boolean cancelInteract;
-    @Path("show.cancel.animation")
+    @Path("cancel.animation")
     private boolean cancelAnimation;
-    @Path("show.cancel.attack")
+    @Path("cancel.attack")
     private boolean cancelAttack;
-    @Path("show.cancel.chat")
+    @Path("cancel.chat")
     private boolean cancelChat;
-    @Path("show.cancel.shoot")
+    @Path("cancel.shoot")
     private boolean cancelShoot;
-    @Path("show.maxBackPage")
+    @Path("maxBackPage")
     @Min(0)
     private int maxBackPage = 10;
-    @Path("show.line")
+    @Path("line")
     @Min(1)
     private int line;
-    @Path("show.cancel.chatCancel")
+    @Path("cancel.chatCancel")
     private boolean inCancelChat;
 
-    @Path("show.fancymessage.add")
+    @Path("fancymessage.add")
     private int add;
-    @Path("show.fancymessage.operateTipMenu")
+    @Path("fancymessage.operateTipMenu")
     private int operateTipMenu;
-    @Path("show.fancymessage.operateTipEmpty")
+    @Path("fancymessage.operateTipEmpty")
     private int operateTipEmpty;
-    @Path("show.fancymessage.pageControl")
+    @Path("fancymessage.pageControl")
     private int pageControl;
-    @Path("show.fancymessage.listControl")
+    @Path("fancymessage.listControl")
     private int listControl;
-    
-    public LangGetter getLang() {
-        return lang;
-    }
 
     public int getDeadLoopLevel() {
         return deadLoopLevel;

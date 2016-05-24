@@ -36,15 +36,15 @@ public class ShowApi {
      * @param config 可为null
      * @return 不为null
      */
-    public static FancyMessage load(String msg, ConfigurationSection config) throws Exception {
-        return Util.load(msg, config);
+    public static FancyMessage loadFancyMessage(String msg, ConfigurationSection config) throws Exception {
+        return Util.loadFancyMessage(msg, config);
     }
 
     /**
      * 注册显示列表
      * @param plugin 插件
      * @param key 列表名
-     * @param showListHandler 列表获取器
+     * @param showListGetter 列表获取器
      */
     public static void register(String plugin, String key, ShowListGetter showListGetter) {
         ShowPlugin.instance.getShowListManager().register(plugin, key, showListGetter);
@@ -74,7 +74,7 @@ public class ShowApi {
     }
 
     /**
-     * @see #show(com.fyxridd.lib.core.api.inter.ShowInterface, Object, org.bukkit.entity.Player, String, String, com.fyxridd.lib.core.api.inter.ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
+     * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
      */
     public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
                             ShowList list, Map<String, Object> data, List<FancyMessage> front, List<FancyMessage> behind) {
@@ -82,7 +82,7 @@ public class ShowApi {
     }
 
     /**
-     * @see #show(com.fyxridd.lib.core.api.inter.ShowInterface, Object, org.bukkit.entity.Player, String, String, com.fyxridd.lib.core.api.inter.ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
+     * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
      */
     public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
                             ShowList<Object> list, Map<String, Object> data, int pageNow, int listNow,
@@ -91,7 +91,7 @@ public class ShowApi {
     }
 
     /**
-     * @see #show(com.fyxridd.lib.core.api.inter.ShowInterface, Object, org.bukkit.entity.Player, String, String, com.fyxridd.lib.core.api.inter.ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
+     * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
      */
     public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
                             ShowList<Object> list, Map<String, Object> data,
@@ -101,7 +101,7 @@ public class ShowApi {
 
     /**
      * 显示页面
-     * @param callback 回调类,用来页面跳转(刷新),null时页面跳转时不刷新
+     * @param refresh 回调类,用来页面跳转(刷新),null时页面跳转时不刷新
      * @param obj 功能自定义的额外保存数据,可为null
      * @param p 玩家,不为null
      * @param plugin 插件名,不为null
@@ -161,7 +161,7 @@ public class ShowApi {
     }
 
     /**
-     * @see #reShow(com.fyxridd.lib.core.api.inter.PlayerContext, boolean)
+     * @see #reShow(PlayerContext, boolean)
      */
     public static void reShow(PlayerContext pc) {
         ShowPlugin.instance.getShowManager().reShow(pc);
@@ -297,8 +297,8 @@ public class ShowApi {
      * @param page 页面名,不为null
      * @return 页面,异常返回null
      */
-    public static Page load(String plugin, String page) throws Exception {
-       return ShowPlugin.instance.getShowManager().load(plugin, page);
+    public static Page loadPage(String plugin, String page) throws Exception {
+       return Util.loadPage(plugin, page);
     }
 
     /**
@@ -308,8 +308,8 @@ public class ShowApi {
      * @param config 页面信息保存的yml文件,不为null
      * @return 页面信息,异常返回null
      */
-    public static Page load(String plugin, String page, ConfigurationSection config) throws Exception {
-        return ShowPlugin.instance.getShowManager().load(plugin, page, config);
+    public static Page loadPage(String plugin, String page, ConfigurationSection config) throws Exception {
+        return Util.loadPage(plugin, page, config);
     }
 
     /**

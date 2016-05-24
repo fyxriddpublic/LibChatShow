@@ -80,11 +80,6 @@ public class StringCompareCondition implements Condition, Convertable{
         this.to = this.to.replace(from, to.toString());
     }
 
-    @Override
-    public String getConvertedStr() {
-        return from+" "+to;
-    }
-
     /**
      * 从字符串中读取条件
      * @return 异常返回null

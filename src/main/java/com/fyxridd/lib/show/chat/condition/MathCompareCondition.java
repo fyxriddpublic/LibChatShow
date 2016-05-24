@@ -61,11 +61,6 @@ public class MathCompareCondition implements Condition, Convertable{
         updateFlag = true;
     }
 
-    @Override
-    public String getConvertedStr() {
-        return exprStr;
-    }
-
     /**
      * 转换变量
      */

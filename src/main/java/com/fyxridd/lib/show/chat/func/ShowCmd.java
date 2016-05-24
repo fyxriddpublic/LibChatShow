@@ -3,6 +3,7 @@ package com.fyxridd.lib.show.chat.func;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fyxridd.lib.show.chat.config.LangConfig;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,18 +19,17 @@ import com.fyxridd.lib.show.chat.api.page.Page;
 import com.fyxridd.lib.show.chat.api.show.PlayerContext;
 import com.fyxridd.lib.show.chat.api.show.Refresh;
 import com.fyxridd.lib.show.chat.api.show.ShowList;
-import com.fyxridd.lib.show.chat.config.ShowConfig;
 
 @FuncType("cmd")
 public class ShowCmd {
-    private ShowConfig config;
-    
+    private LangConfig langConfig;
+
     public ShowCmd() {
         //添加配置监听
-        ConfigApi.addListener(ShowPlugin.instance.pn, ShowConfig.class, new ConfigManager.Setter<ShowConfig>() {
+        ConfigApi.addListener(ShowPlugin.instance.pn, LangConfig.class, new ConfigManager.Setter<LangConfig>() {
             @Override
-            public void set(ShowConfig value) {
-                config = value;
+            public void set(LangConfig value) {
+                langConfig = value;
             }
         });
     }
@@ -342,6 +342,6 @@ public class ShowCmd {
     }
 
     private FancyMessage get(String player, int id, Object... args) {
-        return config.getLang().get(player, id, args);
+        return langConfig.getLang().get(player, id, args);
     }
 }
