@@ -1,9 +1,9 @@
 package com.fyxridd.lib.show.chat.manager;
 
 import com.fyxridd.lib.core.api.config.ConfigApi;
+import com.fyxridd.lib.core.api.config.Setter;
 import com.fyxridd.lib.core.api.event.PlayerChatReceiveEvent;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
-import com.fyxridd.lib.core.config.ConfigManager;
 import com.fyxridd.lib.show.chat.ShowPlugin;
 import com.fyxridd.lib.show.chat.api.ShowApi;
 import com.fyxridd.lib.show.chat.config.DelayChatConfig;
@@ -54,7 +54,7 @@ public class DelayChatManager {
 
     public DelayChatManager() {
         //添加配置监听
-        ConfigApi.addListener(ShowPlugin.instance.pn, DelayChatConfig.class, new ConfigManager.Setter<DelayChatConfig>() {
+        ConfigApi.addListener(ShowPlugin.instance.pn, DelayChatConfig.class, new Setter<DelayChatConfig>() {
             @Override
             public void set(DelayChatConfig value) {
                 config = value;

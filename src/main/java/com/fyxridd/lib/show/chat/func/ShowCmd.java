@@ -3,13 +3,13 @@ package com.fyxridd.lib.show.chat.func;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fyxridd.lib.core.api.config.Setter;
 import com.fyxridd.lib.show.chat.config.LangConfig;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.fyxridd.lib.core.api.config.ConfigApi;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
-import com.fyxridd.lib.core.config.ConfigManager;
 import com.fyxridd.lib.func.api.func.Default;
 import com.fyxridd.lib.func.api.func.Func;
 import com.fyxridd.lib.func.api.func.FuncType;
@@ -26,7 +26,7 @@ public class ShowCmd {
 
     public ShowCmd() {
         //添加配置监听
-        ConfigApi.addListener(ShowPlugin.instance.pn, LangConfig.class, new ConfigManager.Setter<LangConfig>() {
+        ConfigApi.addListener(ShowPlugin.instance.pn, LangConfig.class, new Setter<LangConfig>() {
             @Override
             public void set(LangConfig value) {
                 langConfig = value;

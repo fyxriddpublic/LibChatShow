@@ -1,8 +1,8 @@
 package com.fyxridd.lib.show.chat.manager;
 
 import com.fyxridd.lib.core.api.config.ConfigApi;
-import com.fyxridd.lib.core.config.ConfigManager.Setter;
 
+import com.fyxridd.lib.core.api.config.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;

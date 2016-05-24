@@ -8,9 +8,9 @@ import com.fyxridd.lib.core.api.CoreApi;
 import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.PerApi;
 import com.fyxridd.lib.core.api.config.ConfigApi;
+import com.fyxridd.lib.core.api.config.Setter;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessagePart;
-import com.fyxridd.lib.core.config.ConfigManager;
 import com.fyxridd.lib.func.api.FuncApi;
 import com.fyxridd.lib.params.api.Session;
 import com.fyxridd.lib.show.chat.ShowPlugin;
@@ -78,13 +78,13 @@ public class ShowManager {
         //注册功能
         FuncApi.register(ShowPlugin.instance.pn, new ShowCmd());
         //添加配置监听
-        ConfigApi.addListener(ShowPlugin.instance.pn, LangConfig.class, new ConfigManager.Setter<LangConfig>() {
+        ConfigApi.addListener(ShowPlugin.instance.pn, LangConfig.class, new Setter<LangConfig>() {
             @Override
             public void set(LangConfig value) {
                 langConfig = value;
             }
         });
-        ConfigApi.addListener(ShowPlugin.instance.pn, ShowConfig.class, new ConfigManager.Setter<ShowConfig>() {
+        ConfigApi.addListener(ShowPlugin.instance.pn, ShowConfig.class, new Setter<ShowConfig>() {
             @Override
             public void set(ShowConfig value) {
                 showConfig = value;
