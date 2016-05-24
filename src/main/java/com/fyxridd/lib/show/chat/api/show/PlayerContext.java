@@ -1,15 +1,16 @@
 package com.fyxridd.lib.show.chat.api.show;
 
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 玩家页面上下文(当前成功正在查看的)<br>
- * 不提供set方法(其它类可以调用get方法获取,但不能修改值,防止影响页面返回功能)
+ * (其它类可以调用get方法获取,但不能修改值,防止影响页面返回功能)
  */
 public class PlayerContext {
     private Object obj;//功能自定义的额外保存数据
@@ -19,10 +20,10 @@ public class PlayerContext {
     private String pageName;//页面名
     private int listSize;//列表分页大小
     private ShowList<Object> list;//列表
-    private HashMap<String, Object> data;//名称-值的映射表
+    private Map<String, Object> data;//名称-值的映射表
     private int pageNow;//当前页
     private int listNow;//列表当前页
-    private HashMap<String, ItemStack> itemHash;//名称-物品的映射表
+    private Map<String, ItemStack> itemHash;//名称-物品的映射表
 
     private List<FancyMessage> front, behind;//附加显示的行列表
 
@@ -30,8 +31,8 @@ public class PlayerContext {
     }
 
     public PlayerContext(Object obj, Refresh refresh, Player p, String plugin, String pageName, int listSize,
-                         ShowList<Object> list, HashMap<String, Object> data, int pageNow, int listNow,
-                         List<FancyMessage> front, List<FancyMessage> behind, HashMap<String, ItemStack> itemHash) {
+                         ShowList<Object> list, Map<String, Object> data, int pageNow, int listNow,
+                         List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
         this.obj = obj;
         this.refresh = refresh;
         this.p = p;
@@ -75,7 +76,7 @@ public class PlayerContext {
         return list;
     }
 
-    public HashMap<String, Object> getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 
@@ -87,7 +88,7 @@ public class PlayerContext {
         return listNow;
     }
 
-    public HashMap<String, ItemStack> getItemHash() {
+    public Map<String, ItemStack> getItemHash() {
         return itemHash;
     }
 
@@ -127,7 +128,7 @@ public class PlayerContext {
         this.list = list;
     }
 
-    public void setData(HashMap<String, Object> data) {
+    public void setData(Map<String, Object> data) {
         this.data = data;
     }
 
@@ -139,7 +140,7 @@ public class PlayerContext {
         this.listNow = listNow;
     }
 
-    public void setItemHash(HashMap<String, ItemStack> itemHash) {
+    public void setItemHash(Map<String, ItemStack> itemHash) {
         this.itemHash = itemHash;
     }
 

@@ -1,5 +1,8 @@
 package com.fyxridd.lib.show.chat.api.page;
 
+/**
+ * 显示列表
+ */
 public class ListInfo {
     private String plugin, key, arg;
 
