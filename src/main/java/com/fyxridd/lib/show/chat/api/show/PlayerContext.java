@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class PlayerContext {
     private Object obj;//功能自定义的额外保存数据
-    private Refresh refresh;//回调类,可为null
+    private Refresh refresh;//回调类,不为null
     private Player p;//玩家
     private String plugin;//插件名
     private String pageName;//页面名

@@ -15,8 +15,6 @@ public interface Page {
 
     boolean isEnable();
 
-    boolean isRefresh();
-
     String getPer();
 
     boolean isFillEmpty();

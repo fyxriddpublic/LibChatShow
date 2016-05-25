@@ -409,16 +409,9 @@ public class ShowManager {
     }
 
     /**
-     * @see ShowApi#reShow(PlayerContext, boolean)
+     * @see ShowApi#reShow(PlayerContext)
      */
     public void reShow(PlayerContext pc) {
-        reShow(pc, false);
-    }
-
-    /**
-     * @see ShowApi#reShow(PlayerContext, boolean)
-     */
-    public void reShow(PlayerContext pc, boolean noRefresh) {
         if (pc == null) return;
         Page page = getPage(pc.getPlugin(), pc.getPageName());
         if (page == null) return;
@@ -434,12 +427,7 @@ public class ShowManager {
             return;
         }
         //显示
-        if (!noRefresh && page.isRefresh() && pc.getRefresh() != null) {//刷新
-            pc.getRefresh().refresh(pc);
-        }else {//不刷新
-            show(pc.getRefresh(), pc.getObj(), pc.getP(), pc.getPlugin(), pc.getPageName(), pc.getPageNow(),
-                    pc.getListNow(), pc.getFront(), pc.getBehind(), pc.getItemHash());
-        }
+        pc.getRefresh().refresh(pc);
         //显示正常结束,去除
         reShows.remove(p);
     }

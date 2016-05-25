@@ -28,11 +28,6 @@ public class PageImpl implements Page {
      */
     private int pageMax;
 
-    /**
-     * 页面跳转是否刷新
-     */
-    private boolean refresh;
-
     //显示页面需要的权限
     private String per;
 
@@ -66,13 +61,12 @@ public class PageImpl implements Page {
      * @param pageMax  >0
      * @param pageList 不为null
      */
-    public PageImpl(String plugin, String page, boolean enable, int pageMax, boolean refresh, String per, boolean fillEmpty, boolean handleTip, boolean record, ListInfo listInfo, ParamsFactory paramsFactory,
+    public PageImpl(String plugin, String page, boolean enable, int pageMax, String per, boolean fillEmpty, boolean handleTip, boolean record, ListInfo listInfo, ParamsFactory paramsFactory,
                     List<PageContext> pageList, Map<Integer, LineContext> lines) {
         this.plugin = plugin;
         this.page = page;
         this.enable = enable;
         this.pageMax = pageMax;
-        this.refresh = refresh;
         this.per = per;
         this.fillEmpty = fillEmpty;
         this.handleTip = handleTip;
@@ -95,20 +89,12 @@ public class PageImpl implements Page {
         return pageMax;
     }
 
-    public boolean isRefresh() {
-        return refresh;
-    }
-
     public List<PageContext> getPageList() {
         return pageList;
     }
 
     public void setPageMax(int pageMax) {
         this.pageMax = pageMax;
-    }
-
-    public void setRefresh(boolean refresh) {
-        this.refresh = refresh;
     }
 
     public String getPer() {

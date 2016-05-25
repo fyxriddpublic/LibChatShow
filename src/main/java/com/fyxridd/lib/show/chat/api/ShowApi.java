@@ -98,7 +98,7 @@ public class ShowApi {
 
     /**
      * 显示页面
-     * @param refresh 回调类,用来页面跳转(刷新),null时页面跳转时不刷新
+     * @param refresh 回调类,用来页面跳转(刷新),不为null
      * @param obj 功能自定义的额外保存数据,可为null
      * @param p 玩家,不为null
      * @param plugin 插件名,不为null
@@ -126,13 +126,6 @@ public class ShowApi {
     }
 
     /**
-     * @see #reShow(PlayerContext, boolean)
-     */
-    public static void reShow(PlayerContext pc) {
-        ShowPlugin.instance.getShowManager().reShow(pc);
-    }
-
-    /**
      * 页面跳转,重新显示<br>
      * 以下情况下需要调用:<br>
      *     - 操作提示改变<br>
@@ -140,10 +133,9 @@ public class ShowApi {
      *     - 列表控制:列表当前页改变<br>
      *     - 其它功能自行设置的刷新操作
      * @param pc 玩家页面上下文,null时不显示
-     * @param noRefresh 是否禁止刷新(一般在重新显示页面方法出错时设为true)
      */
-    public static void reShow(PlayerContext pc, boolean noRefresh) {
-        ShowPlugin.instance.getShowManager().reShow(pc, noRefresh);
+    public static void reShow(PlayerContext pc) {
+        ShowPlugin.instance.getShowManager().reShow(pc);
     }
 
     /**

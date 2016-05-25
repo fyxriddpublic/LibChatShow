@@ -118,8 +118,6 @@ public class Util {
         if (pageMax < 0) {
             throw new Exception("pageMax must >= 0");
         }
-        //refresh
-        boolean refresh = config.getBoolean("refresh", true);
         //per
         String per = config.getString("per");
         //fillEmpty
@@ -174,6 +172,6 @@ public class Util {
                 throw new Exception("load page "+index+" error: "+e.getMessage(), e);
             }
         }
-        return new PageImpl(plugin, page, enable, pageMax, refresh, per, fillEmpty, handleTip, record, listInfo, paramsFactory, pageList, lines);
+        return new PageImpl(plugin, page, enable, pageMax, per, fillEmpty, handleTip, record, listInfo, paramsFactory, pageList, lines);
     }
 }
