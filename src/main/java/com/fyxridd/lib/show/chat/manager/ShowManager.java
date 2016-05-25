@@ -111,9 +111,7 @@ public class ShowManager {
             File[] files = dir.listFiles();
             if (files!= null) {
                 for (File file:files) {
-                    if (file.isFile() && file.getName().endsWith(".yml") && !file.getName().endsWith("_description.yml")) {
-                        register(plugin, file.getName().substring(0, file.getName().length()-4));
-                    }
+                    if (file.isFile() && file.getName().endsWith(".yml") && !file.getName().equalsIgnoreCase("Description.yml")) register(plugin, file.getName().substring(0, file.getName().length()-4));
                 }
             }
         }
