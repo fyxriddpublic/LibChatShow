@@ -120,36 +120,6 @@ public class ShowApi {
     }
 
     /**
-     * @see #tip(org.bukkit.entity.Player, java.util.List, boolean)
-     */
-    public static void tip(Player p, String msg, boolean force) {
-        if (msg == null) return;
-        ShowPlugin.instance.getShowManager().tip(p, MessageApi.convert(msg), force);
-    }
-
-    /**
-     * @see #tip(org.bukkit.entity.Player, java.util.List, boolean)
-     */
-    public static void tip(Player p, FancyMessage msg, boolean force) {
-        List<FancyMessage> tipList = new ArrayList<>();
-        tipList.add(msg);
-        ShowPlugin.instance.getShowManager().tip(p, tipList, force);
-    }
-
-    /**
-     * 各种操作对玩家进行提示的时候适合调用此方法<br>
-     * 会自动根据玩家是否正在查看页面而改变显示方式<br>
-     * 可以防止因玩家查看页面而显示不了,也可以让提示玩家的时候不用考虑玩家的显示状态<br>
-     * 适合必须让玩家看到提示时调用
-     * @param p 玩家,不为null
-     * @param msgList 提示信息列表s,可为null
-     * @param force false表示玩家在显示界面时不提示,true表示不管玩家有没显示界面都提示
-     */
-    public static void tip(Player p, List<FancyMessage> msgList, boolean force) {
-        ShowPlugin.instance.getShowManager().tip(p, msgList, force);
-    }
-
-    /**
      * 由行号获取行
      * @param lines 行列表
      * @param line 行号,-1表示页面控制行,-2表示列表控制行

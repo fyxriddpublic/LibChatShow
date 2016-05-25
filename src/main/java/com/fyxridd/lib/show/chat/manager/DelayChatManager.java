@@ -1,5 +1,6 @@
 package com.fyxridd.lib.show.chat.manager;
 
+import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.config.ConfigApi;
 import com.fyxridd.lib.core.api.config.Setter;
 import com.fyxridd.lib.core.api.event.PlayerChatReceiveEvent;
@@ -30,7 +31,7 @@ public class DelayChatManager {
                 Map.Entry<Player, Queue<FancyMessage>> entry = it.next();
                 if (!ShowApi.isInPage(entry.getKey())) {
                     Queue<FancyMessage> queue = entry.getValue();
-                    if (!queue.isEmpty()) ShowApi.tip(entry.getKey(), queue.poll(), true);
+                    if (!queue.isEmpty()) MessageApi.send(entry.getKey(), queue.poll(), true);
                     //删除空聊天信息的
                     if (queue.isEmpty()) it.remove();
                 }
@@ -91,7 +92,7 @@ public class DelayChatManager {
         if (p == null || msg == null) return;
         FancyMessage msgCopy = msg.clone();
 
-        if (force || !ShowApi.isInPage(p)) ShowApi.tip(p, msgCopy, true);
+        if (force || !ShowApi.isInPage(p)) MessageApi.send(p, msgCopy, true);
         else {
             //延时信息添加前缀
             if (config.getPrefix() != null) msgCopy.combine(config.getPrefix(), true);

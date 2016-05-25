@@ -3,6 +3,7 @@ package com.fyxridd.lib.show.chat.func;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.config.Setter;
 import com.fyxridd.lib.show.chat.config.LangConfig;
 import org.bukkit.command.CommandSender;
@@ -45,7 +46,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
         
@@ -63,7 +64,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
         
@@ -81,7 +82,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
 
@@ -99,7 +100,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
 
@@ -117,7 +118,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
 
@@ -135,7 +136,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
         
@@ -155,7 +156,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
         
@@ -173,7 +174,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
 
@@ -191,7 +192,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
 
@@ -209,7 +210,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
 
@@ -227,7 +228,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
 
@@ -248,7 +249,7 @@ public class ShowCmd {
         //当前没有查看的页面
         PlayerContext pc = ShowApi.getPlayerContext(p);
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
         
@@ -281,17 +282,17 @@ public class ShowCmd {
         PlayerContext pc = ShowApi.getPlayerContext(p);
         //当前没有查看的页面
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
         Page pa = ShowApi.getPage(pc.getPlugin(), pc.getPageName());
         if (pa == null) return;//异常
         if (page < 1 || page > pa.getPageMax()) {//页面超出范围
-            ShowApi.tip(p, get(p.getName(), 685), true);
+            MessageApi.send(p, get(p.getName(), 685), true);
             return;
         }
         if (page == pc.getPageNow()) {//已经处于这一页了
-            ShowApi.tip(p, get(p.getName(), 695), true);
+            MessageApi.send(p, get(p.getName(), 695), true);
             return;
         }
         //成功
@@ -314,21 +315,21 @@ public class ShowCmd {
         PlayerContext pc = ShowApi.getPlayerContext(p);
         //当前没有查看的页面
         if (pc == null) {
-            ShowApi.tip(p, get(p.getName(), 665), true);
+            MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
         ShowList list = pc.getList();
         if (list == null) {//页面没有列表
-            ShowApi.tip(p, get(p.getName(), 670), true);
+            MessageApi.send(p, get(p.getName(), 670), true);
             return;
         }
         int listMax = list.getMaxPage(pc.getListSize());//列表最大页
         if (page < 1 || page > listMax) {//页面超出范围
-            ShowApi.tip(p, get(p.getName(), 685), true);
+            MessageApi.send(p, get(p.getName(), 685), true);
             return;
         }
         if (page == pc.getListNow()) {//已经处于这一页了
-            ShowApi.tip(p, get(p.getName(), 695), true);
+            MessageApi.send(p, get(p.getName(), 695), true);
             return;
         }
         //成功

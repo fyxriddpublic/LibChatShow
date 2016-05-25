@@ -479,44 +479,13 @@ public class ShowManager {
         tips.remove(p);
         //当前没有查看的页面
         if (playerContexts.remove(p) == null) {
-            if(tip) tip(p, get(p.getName(), 665), true);
+            if(tip) MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
         //提示
-        if (successTip) tip(p, get(p.getName(), 675), true);
+        if (successTip) MessageApi.send(p, get(p.getName(), 675), true);
         //发出退出页面事件
         Bukkit.getPluginManager().callEvent(new PlayerPageExitEvent(p));
-    }
-
-    /**
-     * @see ShowApi#tip(Player, List, boolean)
-     */
-    public void tip(Player p, String msg, boolean force) {
-        if (msg == null) return;
-        tip(p, MessageApi.convert(msg), force);
-    }
-
-    /**
-     * @see ShowApi#tip(Player, List, boolean)
-     */
-    public void tip(Player p, FancyMessage msg, boolean force) {
-        List<FancyMessage> tipList = new ArrayList<>();
-        tipList.add(msg);
-        tip(p, tipList, force);
-    }
-
-    /**
-     * @see ShowApi#tip(Player, List, boolean)
-     */
-    public void tip(Player p, List<FancyMessage> msgList, boolean force) {
-        if (msgList == null) return;
-        PlayerContext pc = playerContexts.get(p);
-        if (pc == null) {
-            for (FancyMessage tip:msgList) MessageApi.sendChatPacket(p, tip);
-        }else if (force){
-            tips.put(p, msgList);
-            reShow(pc);
-        }
     }
 
     /**

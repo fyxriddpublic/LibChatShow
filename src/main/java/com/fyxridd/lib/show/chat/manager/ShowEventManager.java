@@ -43,12 +43,13 @@ public class ShowEventManager {
                 public void execute(Listener listener, Event e) throws EventException {
                     PlayerTipEvent event = (PlayerTipEvent) e;
                     if (ShowApi.isInPage(event.getP())) {
-                        if (event.isForce()) {//强制显示
-                            //取消事件
-                            event.setCancelled(true);
-                            //使用自己的处理方法
-                            ShowApi.tip(event.getP(), event.getMsgs(), true);
-                        }else event.setCancelled(true);
+                        //取消事件
+                        event.setCancelled(true);
+                        //强制显示
+                        if (event.isForce()) {
+                            ShowApi.setTip(event.getP(), event.getMsgs());
+                            ShowApi.reShow(ShowApi.getPlayerContext(event.getP()));
+                        }
                     }
                 }
             }, ShowPlugin.instance, true);
