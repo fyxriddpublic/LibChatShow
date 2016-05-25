@@ -27,8 +27,6 @@ public interface Page {
 
     int getPageMax();
 
-    int getListSize();
-
     ListInfo getListInfo();
 
     ParamsFactory getParamsFactory();

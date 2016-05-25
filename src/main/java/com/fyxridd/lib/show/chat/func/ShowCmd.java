@@ -19,7 +19,6 @@ import com.fyxridd.lib.show.chat.api.ShowApi;
 import com.fyxridd.lib.show.chat.api.page.Page;
 import com.fyxridd.lib.show.chat.api.show.PlayerContext;
 import com.fyxridd.lib.show.chat.api.show.Refresh;
-import com.fyxridd.lib.show.chat.api.show.ShowList;
 
 @FuncType("cmd")
 public class ShowCmd {
@@ -232,10 +231,7 @@ public class ShowCmd {
             return;
         }
 
-        int listMax;
-        if (pc.getList() == null) listMax = 0;
-        else listMax = pc.getList().getMaxPage(pc.getListSize());
-        toListPage(p, listMax, false);
+        toListPage(p, pc.getListMax() >= 1?pc.getListMax():1, false);
     }
 
     /**
@@ -267,9 +263,9 @@ public class ShowCmd {
         ShowApi.show(new Refresh() {
             @Override
             public void refresh(PlayerContext pc) {
-                ShowApi.show(pc.getRefresh(), pc.getObj(), pc.getP(), pc.getPlugin(), pc.getPageName(), pc.getList(), pc.getPageNow(), pc.getListNow(), pc.getFront(), pc.getBehind(), pc.getItemHash());
+                ShowApi.show(pc.getRefresh(), pc.getObj(), pc.getP(), pc.getPlugin(), pc.getPageName(), pc.getPageNow(), pc.getListNow(), pc.getFront(), pc.getBehind(), pc.getItemHash());
             }
-        }, pageName, p, ShowPlugin.instance.pn, pageName, null, 1, 1, null, null, null);
+        }, pageName, p, ShowPlugin.instance.pn, pageName, 1, 1, null, null, null);
     }
 
     /**
@@ -297,7 +293,7 @@ public class ShowCmd {
         }
         //成功
         if (tip) {
-            List<FancyMessage> list = new ArrayList<FancyMessage>();
+            List<FancyMessage> list = new ArrayList<>();
             list.add(get(p.getName(), 700, page));
             ShowApi.setTip(p, list);
         }
@@ -318,13 +314,7 @@ public class ShowCmd {
             MessageApi.send(p, get(p.getName(), 665), true);
             return;
         }
-        ShowList list = pc.getList();
-        if (list == null) {//页面没有列表
-            MessageApi.send(p, get(p.getName(), 670), true);
-            return;
-        }
-        int listMax = list.getMaxPage(pc.getListSize());//列表最大页
-        if (page < 1 || page > listMax) {//页面超出范围
+        if (page < 1 || page > pc.getListMax()) {//页面超出范围
             MessageApi.send(p, get(p.getName(), 685), true);
             return;
         }
@@ -334,7 +324,7 @@ public class ShowCmd {
         }
         //成功
         if (tip) {
-            List<FancyMessage> result = new ArrayList<FancyMessage>();
+            List<FancyMessage> result = new ArrayList<>();
             result.add(get(p.getName(), 705, page));
             ShowApi.setTip(p, result);
         }

@@ -114,17 +114,12 @@ public class Util {
         //enable
         boolean enable = config.getBoolean("enable", true);
         //pageMax
-        int pageMax = config.getInt("pageMax", 0);
+        int pageMax = config.getInt("pageMax", 1);
         if (pageMax < 0) {
             throw new Exception("pageMax must >= 0");
         }
-        //listSize
-        int listSize = config.getInt("listSize", 0);
-        if (listSize < 0) {
-            throw new Exception("listSize must >= 0");
-        }
         //refresh
-        boolean refresh = config.getBoolean("refresh", false);
+        boolean refresh = config.getBoolean("refresh", true);
         //per
         String per = config.getString("per");
         //fillEmpty
@@ -139,8 +134,10 @@ public class Util {
             String listPlugin = config.getString("list.plugin");
             String listKey = config.getString("list.key");
             String listArg = config.getString("list.arg");
+            int listSize = config.getInt("list.size", 0);
+            if (listSize < 0) throw new Exception("listSize must >= 0");
             if (listPlugin == null || listPlugin.isEmpty()) listInfo = null;
-            else listInfo = new ListInfo(listPlugin, listKey, listArg);
+            else listInfo = new ListInfo(listPlugin, listKey, listArg, listSize);
         }
         //ParamsFactory
         ParamsFactory paramsFactory = new ParamsConverter().convert(plugin, config.getConfigurationSection("params"));
@@ -177,6 +174,6 @@ public class Util {
                 throw new Exception("load page "+index+" error: "+e.getMessage(), e);
             }
         }
-        return new PageImpl(plugin, page, enable, pageMax, listSize, refresh, per, fillEmpty, handleTip, record, listInfo, paramsFactory, pageList, lines);
+        return new PageImpl(plugin, page, enable, pageMax, refresh, per, fillEmpty, handleTip, record, listInfo, paramsFactory, pageList, lines);
     }
 }

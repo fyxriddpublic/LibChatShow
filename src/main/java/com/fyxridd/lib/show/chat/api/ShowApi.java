@@ -1,10 +1,8 @@
 package com.fyxridd.lib.show.chat.api;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 import com.fyxridd.lib.show.chat.ShowPlugin;
 import com.fyxridd.lib.show.chat.Util;
@@ -74,28 +72,28 @@ public class ShowApi {
     }
 
     /**
-     * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
+     * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, int, int, java.util.List, java.util.List, java.util.Map)
      */
     public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
-                            ShowList list, List<FancyMessage> front, List<FancyMessage> behind) {
-        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, front, behind);
-    }
-
-    /**
-     * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
-     */
-    public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
-                            ShowList<Object> list, int pageNow, int listNow,
                             List<FancyMessage> front, List<FancyMessage> behind) {
-        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, pageNow, listNow, front, behind);
+        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, front, behind);
     }
 
     /**
-     * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, ShowList, java.util.Map, int, int, java.util.List, java.util.List, java.util.Map)
+     * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, int, int, java.util.List, java.util.List, java.util.Map)
      */
     public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
-                            ShowList<Object> list, List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
-        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, front, behind, itemHash);
+                            int pageNow, int listNow,
+                            List<FancyMessage> front, List<FancyMessage> behind) {
+        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, pageNow, listNow, front, behind);
+    }
+
+    /**
+     * @see #show(Refresh, Object, org.bukkit.entity.Player, String, String, int, int, java.util.List, java.util.List, java.util.Map)
+     */
+    public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
+                            List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
+        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, front, behind, itemHash);
     }
 
     /**
@@ -105,8 +103,6 @@ public class ShowApi {
      * @param p 玩家,不为null
      * @param plugin 插件名,不为null
      * @param pageName 页面名,不为null
-     * @param list 列表,可为null
-     * @param data 名称-值的映射表,可为null
      * @param pageNow 当前页,>0
      * @param listNow 列表当前页,>0
      * @param front 前面额外附加的行列表,可为null
@@ -114,9 +110,9 @@ public class ShowApi {
      * @param itemHash 物品信息替换,可为null
      */
     public static void show(Refresh refresh, Object obj, Player p, String plugin, String pageName,
-                            ShowList<Object> list, int pageNow, int listNow,
+                            int pageNow, int listNow,
                             List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
-        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, list, pageNow, listNow, front, behind, itemHash);
+        ShowPlugin.instance.getShowManager().show(refresh, obj, p, plugin, pageName, pageNow, listNow, front, behind, itemHash);
     }
 
     /**

@@ -29,11 +29,6 @@ public class PageImpl implements Page {
     private int pageMax;
 
     /**
-     * 列表大小,>=0
-     */
-    private int listSize;
-
-    /**
      * 页面跳转是否刷新
      */
     private boolean refresh;
@@ -51,7 +46,7 @@ public class PageImpl implements Page {
     private boolean record;
 
     /**
-     * 列表信息
+     * 列表信息,可为null
      */
     private ListInfo listInfo;
 
@@ -71,13 +66,12 @@ public class PageImpl implements Page {
      * @param pageMax  >0
      * @param pageList 不为null
      */
-    public PageImpl(String plugin, String page, boolean enable, int pageMax, int listSize, boolean refresh, String per, boolean fillEmpty, boolean handleTip, boolean record, ListInfo listInfo, ParamsFactory paramsFactory,
+    public PageImpl(String plugin, String page, boolean enable, int pageMax, boolean refresh, String per, boolean fillEmpty, boolean handleTip, boolean record, ListInfo listInfo, ParamsFactory paramsFactory,
                     List<PageContext> pageList, Map<Integer, LineContext> lines) {
         this.plugin = plugin;
         this.page = page;
         this.enable = enable;
         this.pageMax = pageMax;
-        this.listSize = listSize;
         this.refresh = refresh;
         this.per = per;
         this.fillEmpty = fillEmpty;
@@ -155,14 +149,6 @@ public class PageImpl implements Page {
 
     public String getPage() {
         return page;
-    }
-
-    public int getListSize() {
-        return listSize;
-    }
-
-    public void setListSize(int listSize) {
-        this.listSize = listSize;
     }
 
     public Map<Integer, LineContext> getLines() {

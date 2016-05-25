@@ -19,9 +19,9 @@ public class PlayerContext {
     private String plugin;//插件名
     private String pageName;//页面名
     private int listSize;//列表分页大小
-    private ShowList<Object> list;//列表
     private int pageNow;//当前页
     private int listNow;//列表当前页
+    private int listMax;//(玩家当前看到的)列表最大页
     private Map<String, ItemStack> itemHash;//名称-物品的映射表
 
     private List<FancyMessage> front, behind;//附加显示的行列表
@@ -30,7 +30,7 @@ public class PlayerContext {
     }
 
     public PlayerContext(Object obj, Refresh refresh, Player p, String plugin, String pageName, int listSize,
-                         ShowList<Object> list, int pageNow, int listNow,
+                         int pageNow, int listNow, int listMax,
                          List<FancyMessage> front, List<FancyMessage> behind, Map<String, ItemStack> itemHash) {
         this.obj = obj;
         this.refresh = refresh;
@@ -38,9 +38,9 @@ public class PlayerContext {
         this.plugin = plugin;
         this.pageName = pageName;
         this.listSize = listSize;
-        this.list = list;
         this.pageNow = pageNow;
         this.listNow = listNow;
+        this.listMax = listMax;
         this.front = front;
         this.behind = behind;
         this.itemHash = itemHash;
@@ -70,16 +70,16 @@ public class PlayerContext {
         return listSize;
     }
 
-    public ShowList<Object> getList() {
-        return list;
-    }
-
     public int getPageNow() {
         return pageNow;
     }
 
     public int getListNow() {
         return listNow;
+    }
+
+    public int getListMax() {
+        return listMax;
     }
 
     public Map<String, ItemStack> getItemHash() {
@@ -118,16 +118,16 @@ public class PlayerContext {
         this.listSize = listSize;
     }
 
-    public void setList(ShowList<Object> list) {
-        this.list = list;
-    }
-
     public void setPageNow(int pageNow) {
         this.pageNow = pageNow;
     }
 
     public void setListNow(int listNow) {
         this.listNow = listNow;
+    }
+
+    public void setListMax(int listMax) {
+        this.listMax = listMax;
     }
 
     public void setItemHash(Map<String, ItemStack> itemHash) {
@@ -144,6 +144,6 @@ public class PlayerContext {
 
     @Override
     public PlayerContext clone() {
-        return new PlayerContext(obj, refresh, p, plugin, pageName, listSize, list, pageNow, listNow, front, behind, itemHash);
+        return new PlayerContext(obj, refresh, p, plugin, pageName, listSize, pageNow, listNow, listMax, front, behind, itemHash);
     }
 }
