@@ -27,6 +27,7 @@ import com.fyxridd.lib.show.chat.config.LangConfig;
 import com.fyxridd.lib.show.chat.config.ShowConfig;
 import com.fyxridd.lib.show.chat.fancymessage.FancyMessagePartExtra;
 import com.fyxridd.lib.show.chat.func.ShowCmd;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -40,6 +41,7 @@ import java.util.*;
  * 显示管理
  */
 public class ShowManager {
+    private static final String CHAT = "chat";
     /**
      * 默认pageNow的值
      */
@@ -75,8 +77,6 @@ public class ShowManager {
     private Map<Player, Integer> reShows = new HashMap<>();
 
     public ShowManager() {
-        //注册功能
-        FuncApi.register(ShowPlugin.instance.pn, new ShowCmd());
         //添加配置监听
         ConfigApi.addListener(ShowPlugin.instance.pn, LangConfig.class, new Setter<LangConfig>() {
             @Override
@@ -90,6 +90,10 @@ public class ShowManager {
                 showConfig = value;
             }
         });
+        //注册功能类型
+        FuncApi.registerTypeHook(CHAT, showConfig.getChatFuncPrefix());
+        //注册功能
+        FuncApi.register(ShowPlugin.instance.pn, new ShowCmd());
         //监听限制聊天包
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(ShowPlugin.instance, PacketType.Play.Server.CHAT) {
             @Override

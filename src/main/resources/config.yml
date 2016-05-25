@@ -8,6 +8,7 @@ lang:
 #####          显示         #####
 #################################
 show:
+  chatFuncPrefix: "#"           #聊天功能类型前缀
   deadLoopLevel: 5              #重复调用几层判定为死循环,>=1
   cancel:                       #检测退出页面
     interact: true              #玩家与方块交互时

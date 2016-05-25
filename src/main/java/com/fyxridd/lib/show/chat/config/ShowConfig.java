@@ -5,6 +5,8 @@ import com.fyxridd.lib.core.api.config.limit.Min;
 
 @Path("show")
 public class ShowConfig {
+    @Path("chatFuncPrefix")
+    private String chatFuncPrefix;
     @Path("deadLoopLevel")
     @Min(1)
     private int deadLoopLevel;
@@ -37,6 +39,10 @@ public class ShowConfig {
     private int pageControl;
     @Path("fancymessage.listControl")
     private int listControl;
+
+    public String getChatFuncPrefix() {
+        return chatFuncPrefix;
+    }
 
     public int getDeadLoopLevel() {
         return deadLoopLevel;
