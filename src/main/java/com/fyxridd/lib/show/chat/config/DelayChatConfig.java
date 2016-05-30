@@ -9,7 +9,7 @@ import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 
 @Path("delayChat")
 public class DelayChatConfig {
-    private class PrefixConverter implements PrimeConvert.PrimeConverter<String, FancyMessage> {
+    private static class PrefixConverter implements PrimeConvert.PrimeConverter<String, FancyMessage> {
         @Override
         public FancyMessage convert(String plugin, String from) {
             if (from == null || from.isEmpty()) return null;

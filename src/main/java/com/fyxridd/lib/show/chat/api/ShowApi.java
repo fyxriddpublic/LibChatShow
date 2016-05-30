@@ -30,15 +30,6 @@ public class ShowApi {
     }
 
     /**
-     * @param msg 文字内容
-     * @param config 可为null
-     * @return 不为null
-     */
-    public static FancyMessage loadFancyMessage(String msg, ConfigurationSection config) throws Exception {
-        return Util.loadFancyMessage(msg, config);
-    }
-
-    /**
      * 注册显示列表
      * @param plugin 插件
      * @param key 列表名

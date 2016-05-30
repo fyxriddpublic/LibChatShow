@@ -30,12 +30,11 @@ public class Util {
     private static final String CON_PREFIX_STRING_HAS = "c";
 
     /**
-     * @see com.fyxridd.lib.show.chat.api.ShowApi#loadFancyMessage(String, ConfigurationSection)
+     * 读取添加额外信息
      */
-    public static FancyMessage loadFancyMessage(String msg, ConfigurationSection config) throws Exception {
+    public static void loadFancyMessageExtra(FancyMessage msg, ConfigurationSection config) throws Exception {
         try {
-            FancyMessage result = MessageApi.load(msg, config);
-            Map<Integer, FancyMessagePart> map = result.getMessageParts();
+            Map<Integer, FancyMessagePart> map = msg.getMessageParts();
             for (int index=0;index<map.size();index++) {
                 boolean hasFix = false;
                 HashList<String> listFix = null;
@@ -53,7 +52,7 @@ public class Util {
                     }
                     //conParams
                     {
-                        conParams = new HashMap<String, Condition>();
+                        conParams = new HashMap<>();
                         ConfigurationSection conParamsConfig = (ConfigurationSection) directConfig.get("con.params");
                         if (conParamsConfig != null) {
                             for (Map.Entry<String, Object> entry:conParamsConfig.getValues(true).entrySet()) {
@@ -86,7 +85,6 @@ public class Util {
                 //更新
                 map.put(index, mpe);
             }
-            return result;
         } catch (Exception e) {
             throw new Exception("FancyMessage load error: "+e.getMessage(), e);
         }

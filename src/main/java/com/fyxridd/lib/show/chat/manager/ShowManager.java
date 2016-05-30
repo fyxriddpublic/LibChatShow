@@ -9,11 +9,13 @@ import com.fyxridd.lib.core.api.MessageApi;
 import com.fyxridd.lib.core.api.PerApi;
 import com.fyxridd.lib.core.api.config.ConfigApi;
 import com.fyxridd.lib.core.api.config.Setter;
+import com.fyxridd.lib.core.api.event.LoadFancyMessageEvent;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessage;
 import com.fyxridd.lib.core.api.fancymessage.FancyMessagePart;
 import com.fyxridd.lib.func.api.FuncApi;
 import com.fyxridd.lib.params.api.Session;
 import com.fyxridd.lib.show.chat.ShowPlugin;
+import com.fyxridd.lib.show.chat.Util;
 import com.fyxridd.lib.show.chat.api.ShowApi;
 import com.fyxridd.lib.show.chat.api.event.PlayerPageExitEvent;
 import com.fyxridd.lib.show.chat.api.fancymessage.Conditional;
@@ -30,7 +32,12 @@ import com.fyxridd.lib.show.chat.func.ShowCmd;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.EventExecutor;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -101,6 +108,21 @@ public class ShowManager {
                 if (ShowApi.isInPage(event.getPlayer())) event.setCancelled(true);
             }
         });
+        //注册事件
+        {
+            //读取FancyMessage事件(添加额外信息)
+            Bukkit.getPluginManager().registerEvent(LoadFancyMessageEvent.class, ShowPlugin.instance, EventPriority.NORMAL, new EventExecutor() {
+                @Override
+                public void execute(Listener listener, Event e) throws EventException {
+                    LoadFancyMessageEvent event = (LoadFancyMessageEvent) e;
+                    try {
+                        Util.loadFancyMessageExtra(event.getResult(), event.getCs());
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }, ShowPlugin.instance);
+        }
     }
 
     /**
