@@ -74,6 +74,7 @@ public class MathCompareCondition implements Condition, Convertable{
      * @return 异常返回null
      */
     public static MathCompareCondition loadFromString(String condition) {
+        if (condition == null) return null;
         return new MathCompareCondition(condition);
     }
 

@@ -174,7 +174,7 @@ public class FancyMessagePartExtra extends FancyMessagePart implements Itemable,
 
         //hasFix
         hasFix = !listFix.isEmpty();
-        if (!hasFix && (" " + text + item + clickActionData + hoverActionData +" ").split(HAS_FIX).length > 1) hasFix = true;
+        if (!hasFix && (" " + text + (item != null?item:"") + clickActionData + hoverActionData +" ").split(HAS_FIX).length > 1) hasFix = true;
         if (!hasFix && conParams != null) {
             for (Condition condition:conParams.values()) {
                 if (condition.toString().split(HAS_FIX).length > 1) {

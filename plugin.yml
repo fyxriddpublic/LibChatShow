@@ -1,9 +1,4 @@
 ﻿name: LibChatShow
-main: com.fyxridd.lib.show.chat.api.ShowPlugin
+main: com.fyxridd.lib.show.chat.ShowPlugin
 version: 0.1.0
 depend: [Vault, ProtocolLib, PacketWrapper, LibCore, LibParams, LibFunc]
-softdepend:
-commands:
-  s:
-    description: InputManager
-    usage: /<command> ?

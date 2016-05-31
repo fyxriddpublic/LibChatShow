@@ -31,52 +31,56 @@ public class Util {
 
     /**
      * 读取添加额外信息
+     * @param config 可能为null
      */
     public static void loadFancyMessageExtra(FancyMessage msg, ConfigurationSection config) throws Exception {
+        if (config == null) return;
         try {
             Map<Integer, FancyMessagePart> map = msg.getMessageParts();
             for (int index=0;index<map.size();index++) {
                 boolean hasFix = false;
                 HashList<String> listFix = null;
-                MathCompareCondition conExp;
-                Map<String, Condition> conParams;
-                String item;
+                MathCompareCondition conExp = null;
+                Map<String, Condition> conParams = null;
+                String item = null;
                 boolean updateFlag = true;
                 //读取
                 {
                     ConfigurationSection directConfig = (ConfigurationSection) config.get(""+index);
 
-                    //conExp
-                    {
-                        conExp = MathCompareCondition.loadFromString(directConfig.getString("con.exp"));
-                    }
-                    //conParams
-                    {
-                        conParams = new HashMap<>();
-                        ConfigurationSection conParamsConfig = (ConfigurationSection) directConfig.get("con.params");
-                        if (conParamsConfig != null) {
-                            for (Map.Entry<String, Object> entry:conParamsConfig.getValues(true).entrySet()) {
-                                String paramName = entry.getKey();
-                                try {
-                                    String paramValue = (String) entry.getValue();
-                                    Condition condition;
-                                    if (paramName.startsWith(CON_PREFIX_MATH_COMPARE)) {
-                                        condition = MathCompareCondition.loadFromString(paramValue);
-                                    }else if (paramName.startsWith(CON_PREFIX_STRING_COMPARE)) {
-                                        condition = StringCompareCondition.loadFromString(paramValue);
-                                    }else if (paramName.startsWith(CON_PREFIX_STRING_HAS)) {
-                                        condition = StringHasCondition.loadFromString(paramValue);
-                                    }else throw new Exception("prefix error!");
-                                    conParams.put(paramName, condition);
-                                } catch (Exception e) {
-                                    throw new Exception("load param '"+paramName+"' error: "+e.getMessage(), e);
+                    if (directConfig != null) {
+                        //conExp
+                        {
+                            conExp = MathCompareCondition.loadFromString(directConfig.getString("con.exp"));
+                        }
+                        //conParams
+                        {
+                            conParams = new HashMap<>();
+                            ConfigurationSection conParamsConfig = (ConfigurationSection) directConfig.get("con.params");
+                            if (conParamsConfig != null) {
+                                for (Map.Entry<String, Object> entry:conParamsConfig.getValues(true).entrySet()) {
+                                    String paramName = entry.getKey();
+                                    try {
+                                        String paramValue = (String) entry.getValue();
+                                        Condition condition;
+                                        if (paramName.startsWith(CON_PREFIX_MATH_COMPARE)) {
+                                            condition = MathCompareCondition.loadFromString(paramValue);
+                                        }else if (paramName.startsWith(CON_PREFIX_STRING_COMPARE)) {
+                                            condition = StringCompareCondition.loadFromString(paramValue);
+                                        }else if (paramName.startsWith(CON_PREFIX_STRING_HAS)) {
+                                            condition = StringHasCondition.loadFromString(paramValue);
+                                        }else throw new Exception("prefix error!");
+                                        conParams.put(paramName, condition);
+                                    } catch (Exception e) {
+                                        throw new Exception("load param '"+paramName+"' error: "+e.getMessage(), e);
+                                    }
                                 }
                             }
                         }
-                    }
-                    //item
-                    {
-                        item = directConfig.getString("item");
+                        //item
+                        {
+                            item = directConfig.getString("item");
+                        }
                     }
                 }
                 //装配
