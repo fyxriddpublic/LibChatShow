@@ -67,7 +67,9 @@ public class DelayChatManager {
         Bukkit.getPluginManager().registerEvent(PlayerQuitEvent.class, ShowPlugin.instance, EventPriority.LOW, new EventExecutor() {
             @Override
             public void execute(Listener listener, Event e) throws EventException {
-                delayChats.remove(((PlayerQuitEvent) e).getPlayer());
+                if (e instanceof PlayerQuitEvent) {
+                    delayChats.remove(((PlayerQuitEvent) e).getPlayer());
+                }
             }
         }, ShowPlugin.instance);
         //监听聊天接收事件

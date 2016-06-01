@@ -114,11 +114,13 @@ public class ShowManager {
             Bukkit.getPluginManager().registerEvent(LoadFancyMessageEvent.class, ShowPlugin.instance, EventPriority.NORMAL, new EventExecutor() {
                 @Override
                 public void execute(Listener listener, Event e) throws EventException {
-                    LoadFancyMessageEvent event = (LoadFancyMessageEvent) e;
-                    try {
-                        Util.loadFancyMessageExtra(event.getResult(), event.getCs());
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
+                    if (e instanceof LoadFancyMessageEvent) {
+                        LoadFancyMessageEvent event = (LoadFancyMessageEvent) e;
+                        try {
+                            Util.loadFancyMessageExtra(event.getResult(), event.getCs());
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }, ShowPlugin.instance);

@@ -95,23 +95,25 @@ public class ShowEventManager {
             Bukkit.getPluginManager().registerEvent(RealDamageEvent.class, ShowPlugin.instance, EventPriority.LOWEST, new EventExecutor() {
                 @Override
                 public void execute(Listener listener, Event e) throws EventException {
-                    RealDamageEvent event = (RealDamageEvent) e;
-                    if (config.isCancelAttack()) {
-                        EntityDamageByEntityEvent entityDamageByEntityEvent = event.getEntityDamageByEntityEvent();
+                    if (e instanceof RealDamageEvent) {
+                        RealDamageEvent event = (RealDamageEvent) e;
+                        if (config.isCancelAttack()) {
+                            EntityDamageByEntityEvent entityDamageByEntityEvent = event.getEntityDamageByEntityEvent();
 
-                        //受攻击者
-                        if (entityDamageByEntityEvent.getEntity() instanceof Player) {
-                            ShowApi.exit((Player) entityDamageByEntityEvent.getEntity(), false, true);
-                        }
+                            //受攻击者
+                            if (entityDamageByEntityEvent.getEntity() instanceof Player) {
+                                ShowApi.exit((Player) entityDamageByEntityEvent.getEntity(), false, true);
+                            }
 
-                        //攻击者
-                        Player damager = null;
-                        if (entityDamageByEntityEvent.getDamager() instanceof Player) damager = (Player) entityDamageByEntityEvent.getDamager();
-                        else if (entityDamageByEntityEvent.getDamager() instanceof Projectile) {
-                            ProjectileSource ps = ((Projectile) entityDamageByEntityEvent.getDamager()).getShooter();
-                            if (ps instanceof Player) damager = (Player) ps;
+                            //攻击者
+                            Player damager = null;
+                            if (entityDamageByEntityEvent.getDamager() instanceof Player) damager = (Player) entityDamageByEntityEvent.getDamager();
+                            else if (entityDamageByEntityEvent.getDamager() instanceof Projectile) {
+                                ProjectileSource ps = ((Projectile) entityDamageByEntityEvent.getDamager()).getShooter();
+                                if (ps instanceof Player) damager = (Player) ps;
+                            }
+                            if (damager != null) ShowApi.exit(damager, false, true);
                         }
-                        if (damager != null) ShowApi.exit(damager, false, true);
                     }
                 }
             }, ShowPlugin.instance);
@@ -120,16 +122,20 @@ public class ShowEventManager {
             Bukkit.getPluginManager().registerEvent(PlayerDeathEvent.class, ShowPlugin.instance, EventPriority.LOWEST, new EventExecutor() {
                 @Override
                 public void execute(Listener listener, Event e) throws EventException {
-                    PlayerDeathEvent event = (PlayerDeathEvent) e;
-                    ShowApi.exit(event.getEntity(), false);
+                    if (e instanceof PlayerDeathEvent) {
+                        PlayerDeathEvent event = (PlayerDeathEvent) e;
+                        ShowApi.exit(event.getEntity(), false);
+                    }
                 }
             }, ShowPlugin.instance);
             //玩家退出
             Bukkit.getPluginManager().registerEvent(PlayerQuitEvent.class, ShowPlugin.instance, EventPriority.LOWEST, new EventExecutor() {
                 @Override
                 public void execute(Listener listener, Event e) throws EventException {
-                    PlayerQuitEvent event = (PlayerQuitEvent) e;
-                    ShowApi.exit(event.getPlayer(), false);
+                    if (e instanceof PlayerQuitEvent) {
+                        PlayerQuitEvent event = (PlayerQuitEvent) e;
+                        ShowApi.exit(event.getPlayer(), false);
+                    }
                 }
             }, ShowPlugin.instance);
         }
